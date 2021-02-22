@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI
@@ -12,11 +11,11 @@ namespace inausoft.netCLI
 
         private static string optionsPattern = @"--(\S+)\s?(\w\S+)*";
 
-        private IEnumerable<CommandHandler> _commandHandlers;
+        internal List<ICommandHandler> CommandHandlers { get; }
 
-        public RootCommandHandler(IEnumerable<CommandHandler> commandHandlers)
+        public RootCommandHandler(IEnumerable<ICommandHandler> commandHandlers)
         {
-            _commandHandlers = commandHandlers;
+            CommandHandlers = commandHandlers.ToList();
         }
 
         public int Run(string[] args)
@@ -29,42 +28,43 @@ namespace inausoft.netCLI
             {
                 var commandName = match.Groups[1].Value;
 
-                var commandHandler = _commandHandlers.FirstOrDefault(it =>
-                    Attribute.IsDefined(it.GetOptionsType(), typeof(CommandNameAttribute)) &&
-                    (Attribute.GetCustomAttribute(it.GetOptionsType(), typeof(CommandNameAttribute)) as CommandNameAttribute).CommandName == commandName);
+                var commandHandler = CommandHandlers.FirstOrDefault(it =>
+                    Attribute.IsDefined(it.GetCommandType(), typeof(CommandAttribute)) &&
+                    (Attribute.GetCustomAttribute(it.GetCommandType(), typeof(CommandAttribute)) as CommandAttribute).Name == commandName);
 
                 if (commandHandler == null)
                 {
-                    throw new Exception($"Command {commandName} was not found");
+                    throw new InvalidCommandException(commandName, $"Command {commandName} is invalid.");
                 }
 
-                var commandType = commandHandler.GetOptionsType();
-
-                var command = Activator.CreateInstance(commandType);
-
-                var options = new Regex(optionsPattern).Matches(fullExpresion);
-
-                foreach (Match option in options)
-                {
-                    var property = commandType.GetProperties().FirstOrDefault(it => Attribute.IsDefined(it, typeof(OptionAtrribute))
-                                                            && (Attribute.GetCustomAttribute(it, typeof(OptionAtrribute)) as OptionAtrribute).Name == option.Groups[1].Value);
-
-                    if (string.IsNullOrEmpty(option.Groups[2].Value))
-                    {
-                        property.SetMethod.Invoke(command, new object[] { true });
-                    }
-                    else
-                    {
-                        property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Groups[2].Value, property.PropertyType) });
-                    }
-
-                }
-
-                return commandHandler.Run(command);
+                return commandHandler.Run(CreateCommandFromExpression(commandHandler.GetCommandType(), fullExpresion));
             }
 
             return 0;
         }
 
+        private object CreateCommandFromExpression(Type commandType, string expression)
+        {
+            var command = Activator.CreateInstance(commandType);
+
+            var options = new Regex(optionsPattern).Matches(expression);
+
+            foreach (Match option in options)
+            {
+                var property = commandType.GetProperties().FirstOrDefault(it => Attribute.IsDefined(it, typeof(OptionAttribute))
+                                                        && (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == option.Groups[1].Value);
+
+                if (string.IsNullOrEmpty(option.Groups[2].Value))
+                {
+                    property.SetMethod.Invoke(command, new object[] { true });
+                }
+                else
+                {
+                    property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Groups[2].Value, property.PropertyType) });
+                }
+            }
+
+            return command;
+        }
     }
 }

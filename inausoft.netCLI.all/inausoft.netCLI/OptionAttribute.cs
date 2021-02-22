@@ -3,11 +3,13 @@
 namespace inausoft.netCLI
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class OptionAtrribute : Attribute
+    public class OptionAttribute : Attribute
     {
         public string Name { get; }
 
-        public OptionAtrribute(string name)
+        public string HelpDescription { get; }
+
+        public OptionAttribute(string name)
         {
             Name = name;
         }

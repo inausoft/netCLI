@@ -2,23 +2,23 @@
 
 namespace inausoft.netCLI
 {
-    public abstract class CommandHandler
+    public interface ICommandHandler
     {
-        internal abstract Type GetOptionsType();
+        Type GetCommandType();
 
-        internal abstract int Run(object options);
+        int Run(object command);
     }
 
-    public abstract class CommandHandler<T> : CommandHandler where T : class
+    public abstract class CommandHandler<T> : ICommandHandler where T : class
     {
         public abstract int Run(T options);
 
-        internal override int Run(object options)
+        public int Run(object command)
         {
-            return Run(options as T);
+            return Run(command as T);
         }
 
-        internal override Type GetOptionsType()
+        public Type GetCommandType()
         {
             return typeof(T);
         }
