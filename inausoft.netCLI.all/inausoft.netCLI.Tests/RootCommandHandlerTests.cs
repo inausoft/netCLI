@@ -40,6 +40,31 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
+        public void TestMethod4()
+        {
+            //Arrange
+            var stringOptionValue = "s";
+
+            var args = new string[]
+                            {
+                                "command1",
+                                "--stringOption", stringOptionValue
+                            };
+
+            //Act
+            var mockCommandHandler = new MockCommand1Handler();
+            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
+
+            var result = rootCommandHanlder.Run(args);
+
+            //Assert
+            Assert.AreEqual(0, result);
+            Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
+            Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
+
+        }
+
+        [TestMethod]
         public void TestMethod2()
         {
             //Arrange

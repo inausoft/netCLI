@@ -2,6 +2,9 @@
 
 namespace inausoft.netCLI
 {
+    /// <summary>
+    /// Marks class as a verb command. Related properties should be mark using <see cref="OptionAttribute"/>
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class CommandAttribute : Attribute
     {

@@ -1,6 +1,6 @@
 # netCLI
 
-netCLI is a lightwaight library ment for faciliate command line arguments parsing and flow control over .net CLI applications.
+netCLI is a lightweight library meant to facilitate command line arguments parsing and flow control over .net CLI applications.
 
 C# Quick Start:
 
@@ -20,9 +20,7 @@ namespace ConsoleApp1
             services.AddCLI();
 
             var provider = services.BuildServiceProvider();
-            var rootCommandHandler = provider.GetRequiredService<RootCommandHandler>();
-
-            rootCommandHandler.Run(args);
+            provider.RunCLI(args);
         }
     }
 
@@ -51,3 +49,7 @@ namespace ConsoleApp1
 }
 
 ```
+
+# Contributors
+
+- Iwanowski, Marcin

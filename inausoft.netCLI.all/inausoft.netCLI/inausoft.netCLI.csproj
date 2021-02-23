@@ -7,12 +7,25 @@
     <PackageProjectUrl>https://github.com/inausoft/netCLI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inausoft/netCLI</RepositoryUrl>
     <PackageTags>CLI</PackageTags>
-    <Version>0.3.3</Version>
+    <Version>0.5.0</Version>
+    <Description>Lightweight library meant for facilitate command line arguments parsing and flow control over .net CLI applications</Description>
+    <PackageIcon>netCLI.png</PackageIcon>
+    <PackageIconUrl />
+    <AssemblyVersion>0.5.0.0</AssemblyVersion>
+    <FileVersion>0.5.0.0</FileVersion>
+    <NeutralLanguage>en-GB</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="assets\netCLI.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
