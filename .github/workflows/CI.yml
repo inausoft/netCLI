@@ -1,10 +1,7 @@
 name: .NET
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,7 +15,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./inausoft.netCLI.all/inausoft.netCLI.all.sln
     - name: Build
       run: dotnet build --no-restore
     - name: Test
