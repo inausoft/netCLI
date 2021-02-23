@@ -15,7 +15,8 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore ./inausoft.netCLI.all/inausoft.netCLI.all.sln
+      run: dotnet restore
+      working-directory: inausoft.netCLI.all
     - name: Build
       run: dotnet build --no-restore
     - name: Test
