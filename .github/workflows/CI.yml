@@ -1,4 +1,4 @@
-name: .NET
+name: build_check
 
 on:
   workflow_dispatch:
