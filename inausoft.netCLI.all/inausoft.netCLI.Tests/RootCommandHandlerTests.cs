@@ -2,6 +2,7 @@ using inausoft.netCLI.MateuszCommands;
 using inausoft.netCLI.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 using static inausoft.netCLI.MateuszCommands.MateuszCommandHandler;
 
 namespace inausoft.netCLI.Tests
@@ -172,6 +173,9 @@ namespace inausoft.netCLI.Tests
             var mateuszRootCommandHandler = new MateuszRootCommandHandler(new List<IMateuszCommandHandler<IMateuszCommand>> { new MateuszCommandHandler() });
 
             var result = mateuszRootCommandHandler.Run(args);
+            Assert.IsNotNull(mateuszRootCommandHandler.CommandHandlers.First().GetCommand());
+            Assert.IsNotNull((mateuszRootCommandHandler.CommandHandlers.First().GetCommand() as MateuszCommand).ExampleArgument);
+            Assert.IsNull((mateuszRootCommandHandler.CommandHandlers.First().GetCommand() as MateuszCommand).OptionalParameter);
 
 
         }

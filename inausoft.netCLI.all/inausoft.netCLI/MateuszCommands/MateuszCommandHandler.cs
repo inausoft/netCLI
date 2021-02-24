@@ -4,21 +4,17 @@ namespace inausoft.netCLI.MateuszCommands
 {
     public class MateuszCommandHandler : IMateuszCommandHandler<MateuszCommandHandler.MateuszCommand>
     {
-        public MateuszCommandHandler()
-        {
-            SetCommand(new MateuszCommand());
-        }
 
         private MateuszCommand command;
+
+        public MateuszCommandHandler()
+        {
+            command = new MateuszCommand();
+        }
 
         public MateuszCommand GetCommand()
         {
             return command;
-        }
-
-        public void SetCommand(MateuszCommand value)
-        {
-            command = value;
         }
 
         public int Run()

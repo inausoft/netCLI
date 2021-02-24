@@ -14,9 +14,9 @@ namespace inausoft.netCLI.MateuszCommands
         //pattern for fetching 'option value' pairs from command line string.
         private static string optionsPattern = @"--(\S+)\s?(\w\S*)*";
 
-        public IEnumerable<IMateuszCommandHandler<IMateuszCommand>> CommandHandlers;
+        public List<IMateuszCommandHandler<IMateuszCommand>> CommandHandlers;
 
-        public MateuszRootCommandHandler(IEnumerable<IMateuszCommandHandler<IMateuszCommand>> mateuszCommands)
+        public MateuszRootCommandHandler(List<IMateuszCommandHandler<IMateuszCommand>> mateuszCommands)
         {
             CommandHandlers = mateuszCommands;
         }
