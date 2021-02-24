@@ -1,5 +1,8 @@
+using inausoft.netCLI.MateuszCommands;
 using inausoft.netCLI.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
+using static inausoft.netCLI.MateuszCommands.MateuszCommandHandler;
 
 namespace inausoft.netCLI.Tests
 {
@@ -14,8 +17,8 @@ namespace inausoft.netCLI.Tests
             var pathOptionValue = @"C:\Program%Files";
             var intOptionValue = 102;
 
-            var args = new string[] 
-                            { 
+            var args = new string[]
+                            {
                                 "command1",
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
@@ -25,8 +28,8 @@ namespace inausoft.netCLI.Tests
 
             //Act
             var mockCommandHandler = new MockCommand1Handler();
-            var rootCommandHanlder = new RootCommandHandler( new ICommandHandler[] { mockCommandHandler });
-            
+            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
+
             var result = rootCommandHanlder.Run(args);
 
             //Assert
@@ -36,7 +39,7 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
             Assert.AreEqual(pathOptionValue, mockCommandHandler.LastRunParameters.PathOption);
             Assert.AreEqual(intOptionValue, mockCommandHandler.LastRunParameters.IntOption);
-            
+
         }
 
         [TestMethod]
@@ -91,6 +94,86 @@ namespace inausoft.netCLI.Tests
             Assert.IsNull(mockCommand1Handler.LastRunParameters.StringOption);
             Assert.IsNull(mockCommand1Handler.LastRunParameters.PathOption);
             Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
+        }
+
+        [TestMethod]
+        public void Command2WithoutParameters_ReturnsCorrectCommand()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "command2",
+                            };
+
+            //Act
+            var mockCommand1Handler = new MockCommand1Handler();
+            var mockCommand2Handler = new MockCommand2Handler();
+            var rootCommandHandler = new RootCommandHandler(new ICommandHandler[] { mockCommand2Handler, mockCommand1Handler });
+
+            var result = rootCommandHandler.Run(args);
+
+            //Assert
+            Assert.AreEqual(0, result);
+
+            Assert.IsNotNull(mockCommand2Handler.LastRunParameters);
+        }
+
+        [ExpectedException(typeof(InvalidCommandException))]
+        [TestMethod]
+        public void Command3WithoutRequiredParameter_ThrowsExcception()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "command3",
+                                  "--OptionalArgument", "true",
+                            };
+
+            //Act
+            var mockCommand3Handler = new MockCommand3Handler();
+            var rootCommandHandler = new RootCommandHandler(new ICommandHandler[] { mockCommand3Handler });
+
+            var result = rootCommandHandler.Run(args);
+            //Assert with exception
+        }
+
+        [TestMethod]
+        public void Command3WithoutRequiredParameter_RequiredParameterShouldReturnNull()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "command3",
+                                  "--OptionalArgument", "true",
+                            };
+
+            //Act
+            var mockCommand3Handler = new MockCommand3Handler();
+            var rootCommandHandler = new RootCommandHandler(new ICommandHandler[] { mockCommand3Handler });
+
+            var result = rootCommandHandler.Run(args);
+            Assert.IsTrue(mockCommand3Handler.LastRunParameters.OptionalArgument);
+            //Because of boolean value type, we still think that argument was set. Maybe we should use only nullable types? 
+            Assert.IsNull(mockCommand3Handler.LastRunParameters.RequiredArgument);
+
+        }
+
+        [TestMethod]
+        public void MateuszCommandHandlerTest()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "command3",
+                                  "--argument", "kokos",
+                            };
+
+            //Act
+            var mateuszRootCommandHandler = new MateuszRootCommandHandler(new List<IMateuszCommandHandler<IMateuszCommand>> { new MateuszCommandHandler() });
+
+            var result = mateuszRootCommandHandler.Run(args);
+
+
         }
 
 

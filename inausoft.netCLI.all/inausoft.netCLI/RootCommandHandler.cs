@@ -52,7 +52,7 @@ namespace inausoft.netCLI
                 {
                     throw new InvalidCommandException(commandName, $"Command {commandName} is invalid.");
                 }
-
+                //TODO: I think that this part is overcomplicated. See MateuszCommand Folder
                 return commandHandler.Run(CreateCommandFromExpression(commandHandler.GetCommandType(), fullExpresion));
             }
 
