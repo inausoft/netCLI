@@ -40,23 +40,23 @@ namespace inausoft.netCLI
 
             var match = new Regex(commandPattern).Match(fullExpresion);
 
-            if (match.Success)
+            if (!match.Success)
             {
-                var commandName = match.Groups[1].Value;
-
-                var commandHandler = CommandHandlers.FirstOrDefault(it =>
-                    Attribute.IsDefined(it.GetCommandType(), typeof(CommandAttribute)) &&
-                    (Attribute.GetCustomAttribute(it.GetCommandType(), typeof(CommandAttribute)) as CommandAttribute).Name == commandName);
-
-                if (commandHandler == null)
-                {
-                    throw new InvalidCommandException(commandName, $"Command {commandName} is invalid.");
-                }
-
-                return commandHandler.Run(CreateCommandFromExpression(commandHandler.GetCommandType(), fullExpresion));
+                throw new ArgumentException($"{args} must follow: [command] [--optionName] <optionValue>.");
             }
 
-            return 0;
+            var commandName = match.Groups[1].Value;
+
+            var commandHandler = CommandHandlers.FirstOrDefault(it =>
+                Attribute.IsDefined(it.GetCommandType(), typeof(CommandAttribute)) &&
+                (Attribute.GetCustomAttribute(it.GetCommandType(), typeof(CommandAttribute)) as CommandAttribute).Name == commandName);
+
+            if (commandHandler == null)
+            {
+                throw new InvalidCommandException(commandName, $"Command {commandName} is invalid.");
+            }
+
+            return commandHandler.Run(CreateCommandFromExpression(commandHandler.GetCommandType(), fullExpresion));
         }
 
         //Creates a command object from command line arguments.
@@ -68,8 +68,15 @@ namespace inausoft.netCLI
 
             foreach (Match option in options)
             {
+                var optionName = option.Groups[1].Value;
+
                 var property = commandType.GetProperties().FirstOrDefault(it => Attribute.IsDefined(it, typeof(OptionAttribute))
-                                                        && (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == option.Groups[1].Value);
+                                                        && (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
+
+                if (property == null)
+                {
+                    throw new InvalidOptionException(optionName, $"Option {optionName} was not defined for {commandType}");
+                }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
                 if (string.IsNullOrEmpty(option.Groups[2].Value))

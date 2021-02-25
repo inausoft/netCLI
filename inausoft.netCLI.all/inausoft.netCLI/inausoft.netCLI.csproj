@@ -6,14 +6,16 @@
     <Authors>Iwanowski, Marcin</Authors>
     <PackageProjectUrl>https://github.com/inausoft/netCLI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inausoft/netCLI</RepositoryUrl>
-    <PackageTags>CLI</PackageTags>
-    <Version>0.5.0</Version>
+    <PackageTags>CLI command line parsing</PackageTags>
+    <Version>1.0.0-rc.4</Version>
     <Description>Lightweight library meant for facilitate command line arguments parsing and flow control over .net CLI applications</Description>
     <PackageIcon>netCLI.png</PackageIcon>
     <PackageIconUrl />
-    <AssemblyVersion>0.5.0.0</AssemblyVersion>
-    <FileVersion>0.5.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageReleaseNotes>- First alpha release.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="assets\netCLI.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

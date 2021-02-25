@@ -7,7 +7,7 @@ namespace inausoft.netCLI.Tests
     public class RootCommandHandlerTests
     {
         [TestMethod]
-        public void TestMethod1()
+        public void RootCommandHandler_RunsProperCommandHandler_ForMultipleOptions()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -23,10 +23,10 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", intOptionValue.ToString()
                             };
 
-            //Act
             var mockCommandHandler = new MockCommand1Handler();
-            var rootCommandHanlder = new RootCommandHandler( new ICommandHandler[] { mockCommandHandler });
-            
+            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
+
+            //Act
             var result = rootCommandHanlder.Run(args);
 
             //Assert
@@ -40,7 +40,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void TestMethod4()
+        public void RootCommandHandler_RunsProperCommandHandler_ForDifferentStringOptions()
         {
             //Arrange
             var stringOptionValue = "s";
@@ -51,10 +51,10 @@ namespace inausoft.netCLI.Tests
                                 "--stringOption", stringOptionValue
                             };
 
-            //Act
             var mockCommandHandler = new MockCommand1Handler();
             var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
 
+            //Act
             var result = rootCommandHanlder.Run(args);
 
             //Assert
@@ -65,7 +65,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void RootCommandHandler_RunsOnlyProperCommandHandler_WhenMultipleCommandHandlersAreRegistrated()
         {
             //Arrange
             var args = new string[]
@@ -74,11 +74,11 @@ namespace inausoft.netCLI.Tests
                                 "--boolOption", "true",
                             };
 
-            //Act
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
             var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommand2Handler, mockCommand1Handler });
 
+            //Act
             var result = rootCommandHanlder.Run(args);
 
             //Assert
@@ -96,19 +96,38 @@ namespace inausoft.netCLI.Tests
 
         [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
-        public void TestMethod3()
+        public void RootCommandHandler_ThrowsInvalidCommmandException_ForNotRegistratedCommand()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "commandXX",
+                                "--boolOption", "true",
+                            };
+
+            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { new MockCommand2Handler() });
+
+            //Act
+            rootCommandHanlder.Run(args);
+
+            //Assert with exception
+        }
+
+        [ExpectedException(typeof(InvalidOptionException))]
+        [TestMethod]
+        public void RootCommandHandler_ThrowsInvalidOptionException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
                             {
                                 "command1",
-                                "--boolOption", "true",
+                                "--boolOptionXX", "true",
                             };
 
-            //Act
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { new MockCommand2Handler() });
+            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { new MockCommand1Handler() });
 
-            var result = rootCommandHanlder.Run(args);
+            //Act
+            rootCommandHanlder.Run(args);
 
             //Assert with exception
         }
