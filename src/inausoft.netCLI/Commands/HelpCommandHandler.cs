@@ -11,13 +11,13 @@ namespace inausoft.netCLI.Commands
     /// </summary>
     public class HelpCommandHandler : CommandHandler<HelpCommand>
     {
-        private readonly IEnumerable<ICommandHandler> _commandHandlers;
+        private readonly CliConfiguration _configuration;
 
         private readonly ILogger<HelpCommandHandler> _logger;
 
-        public HelpCommandHandler(IEnumerable<ICommandHandler> commandHandlers, ILogger<HelpCommandHandler> logger)
+        public HelpCommandHandler(CliConfiguration configuration, ILogger<HelpCommandHandler> logger)
         {
-            _commandHandlers = commandHandlers ?? throw new ArgumentNullException(nameof(commandHandlers));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -31,10 +31,8 @@ namespace inausoft.netCLI.Commands
 
             if (string.IsNullOrEmpty(command.SpecifiedCommandName))
             {
-                foreach (var commandHandler in _commandHandlers)
+                foreach (var commandType in _configuration.CommandTypes)
                 {
-                    var commandType = commandHandler.GetCommandType();
-
                     if (Attribute.IsDefined(commandType, typeof(CommandAttribute)))
                     {
                         CommandAttribute attribute = Attribute.GetCustomAttribute(commandType, typeof(CommandAttribute)) as CommandAttribute;
@@ -45,23 +43,29 @@ namespace inausoft.netCLI.Commands
             }
             else
             {
-                var commandHandler = _commandHandlers.FirstOrDefault(it =>
-                    Attribute.IsDefined(it.GetCommandType(), typeof(CommandAttribute)) &&
-                    (Attribute.GetCustomAttribute(it.GetCommandType(), typeof(CommandAttribute)) as CommandAttribute).Name == command.SpecifiedCommandName);
+                var commandType = _configuration.CommandTypes.FirstOrDefault(it =>
+                    Attribute.IsDefined(it, typeof(CommandAttribute)) &&
+                    (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == command.SpecifiedCommandName);
 
-                if (commandHandler == null)
+                if (commandType == null)
                 {
                     throw new InvalidCommandException(command.SpecifiedCommandName, $"Command {command.SpecifiedCommandName} is invalid.");
                 }
 
-                StringBuilder message = new StringBuilder(command.SpecifiedCommandName);
+                StringBuilder message = new StringBuilder($"{command.SpecifiedCommandName}");
 
-                var properties = commandHandler.GetCommandType().GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
+                var properties = commandType.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
+
+                if(properties != null)
+                {
+                    message.AppendLine(" [OPTIONS]");
+                    message.AppendLine("options:");
+                }
 
                 foreach(var property in properties)
                 {
-                    var option = (Attribute.GetCustomAttribute(property, typeof(OptionAttribute)) as OptionAttribute).Name;
-                    message.Append($" --{option} <{option.ToUpper()}>");
+                    var option = (Attribute.GetCustomAttribute(property, typeof(OptionAttribute)) as OptionAttribute);
+                    message.AppendLine($" --{option.Name} \t\t {option.HelpDescription}");
                 }
 
                 _logger.LogInformation(message.ToString());

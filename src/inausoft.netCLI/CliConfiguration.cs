@@ -1,56 +1,41 @@
-﻿using inausoft.netCLI.Commands;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using inausoft.netCLI.Deserialization;
 using System;
+using System.Collections.Generic;
 
 namespace inausoft.netCLI
 {
-    public static class CliConfigurationExtentions
+    public class CliConfiguration
     {
-        /// <summary>
-        /// Setups CLI flow by adding and configuring <see cref="RootCommandHandler"/>.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="SetupHelpCommand"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddCLI(this IServiceCollection services, bool SetupHelpCommand = false)
+        internal readonly Dictionary<Type, Type> _commandMap;
+
+        public IArgumentDeserializer Deserializer { get; private set; }
+
+        public IEnumerable<Type> CommandTypes
         {
-            if(services == null)
+            get
             {
-                throw new ArgumentNullException($"{nameof(services)} cannot be null.");
+                return _commandMap.Keys;
             }
-
-            if (SetupHelpCommand)
-            {
-                return services.AddSingleton<RootCommandHandler>(provider => 
-                {
-                    var rootCommandHandler = new RootCommandHandler(provider.GetServices<ICommandHandler>());
-                    rootCommandHandler.CommandHandlers.Add(new HelpCommandHandler(rootCommandHandler.CommandHandlers,
-                                                            provider.GetRequiredService<ILogger<HelpCommandHandler>>()));
-
-                    return rootCommandHandler;
-                });
-            }
-
-            return services.AddSingleton<RootCommandHandler>();
         }
 
-        /// <summary>
-        /// Runs <see cref="ICommandHandler"/> for command specified in args./>
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="args">Application's command line arguments.</param>
-        /// <returns></returns>
-        public static int RunCLI(this IServiceProvider serviceProvider, string[] args)
+        public CliConfiguration()
         {
-            var rootCommandHandler = serviceProvider.GetService<RootCommandHandler>();
+            _commandMap = new Dictionary<Type, Type>();
+            Deserializer = new RegexArgumentDeserializer();
+        }
 
-            if(rootCommandHandler == null)
-            {
-                throw new InvalidOperationException($"{nameof(RootCommandHandler)} was not registered. Run '{nameof(AddCLI)}' first.");
-            }
+        public CliConfiguration Map<T1, T2>() where T1 : class where T2 : CommandHandler<T1>
+        {
+            _commandMap.Add(typeof(T1), typeof(T2));
 
-            return rootCommandHandler.Run(args);
+            return this;
+        }
+
+        public CliConfiguration MapDeserialiser(IArgumentDeserializer deserializer)
+        {
+            Deserializer = deserializer;
+
+            return this;
         }
     }
 }

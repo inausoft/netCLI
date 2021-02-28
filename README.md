@@ -18,11 +18,19 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             var services = new ServiceCollection();
-            services.AddSingleton<ICommandHandler, MoveCommandHandler>();
-            services.AddCLI();
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+                builder.AddDebug();
+            });
+            services.AddCLI(config => {
+                config.Map<MoveCommand, MoveCommandHandler>()
+                      .MapHelpCommand();
+            });
 
             var provider = services.BuildServiceProvider();
-            provider.RunCLI(args);
+
+            return provider.RunCLI(args);
         }
     }
 

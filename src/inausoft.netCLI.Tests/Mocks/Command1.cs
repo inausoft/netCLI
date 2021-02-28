@@ -9,9 +9,6 @@
         [OptionAttribute("stringOption")]
         public string StringOption { get; set; }
 
-        [OptionAttribute("pathOption")]
-        public string PathOption { get; set; }
-
         [OptionAttribute("intOption")]
         public int IntOption { get; set; }
 

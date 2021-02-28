@@ -11,7 +11,6 @@ namespace inausoft.netCLI.Tests
         {
             //Arrange
             var stringOptionValue = "sampleString";
-            var pathOptionValue = @"C:\Program%Files";
             var intOptionValue = 102;
 
             var args = new string[] 
@@ -19,22 +18,20 @@ namespace inausoft.netCLI.Tests
                                 "command1",
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
-                                "--pathOption", pathOptionValue,
                                 "--intOption", intOptionValue.ToString()
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
+            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            var result = rootCommandHanlder.Run(args);
+            var result = netCLI.RunCLI(config, args, mockCommandHandler);
 
             //Assert
             Assert.AreEqual(0, result);
             Assert.IsTrue(mockCommandHandler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
-            Assert.AreEqual(pathOptionValue, mockCommandHandler.LastRunParameters.PathOption);
             Assert.AreEqual(intOptionValue, mockCommandHandler.LastRunParameters.IntOption);
             
         }
@@ -52,10 +49,10 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommandHandler });
+            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            var result = rootCommandHanlder.Run(args);
+            var result = netCLI.RunCLI(config, args, mockCommandHandler);
 
             //Assert
             Assert.AreEqual(0, result);
@@ -76,10 +73,11 @@ namespace inausoft.netCLI.Tests
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { mockCommand2Handler, mockCommand1Handler });
+            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>()
+                                               .Map<Command2, MockCommand2Handler>();
 
             //Act
-            var result = rootCommandHanlder.Run(args);
+            var result = netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand2Handler);
 
             //Assert
             Assert.AreEqual(0, result);
@@ -89,7 +87,6 @@ namespace inausoft.netCLI.Tests
             Assert.IsTrue(mockCommand1Handler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommand1Handler.LastRunParameters.NotOptionProperty);
             Assert.IsNull(mockCommand1Handler.LastRunParameters.StringOption);
-            Assert.IsNull(mockCommand1Handler.LastRunParameters.PathOption);
             Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
         }
 
@@ -105,10 +102,11 @@ namespace inausoft.netCLI.Tests
                                 "--boolOption", "true",
                             };
 
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { new MockCommand2Handler() });
+            var mockCommand1Handler = new MockCommand1Handler();
+            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            rootCommandHanlder.Run(args);
+            netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
 
             //Assert with exception
         }
@@ -124,10 +122,11 @@ namespace inausoft.netCLI.Tests
                                 "--boolOptionXX", "true",
                             };
 
-            var rootCommandHanlder = new RootCommandHandler(new ICommandHandler[] { new MockCommand1Handler() });
+            var mockCommand1Handler = new MockCommand1Handler();
+            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            rootCommandHanlder.Run(args);
+            netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
 
             //Assert with exception
         }
