@@ -1,3 +1,5 @@
+[![NuGet version (inausoft.netCLI)](https://img.shields.io/nuget/v/inausoft.netCLI.svg?style=flat-square)](https://www.nuget.org/packages/inausoft.netCLI/)
+
 # netCLI
 
 ![Logo](src/inausoft.netCLI/assets/netCLI.png)
