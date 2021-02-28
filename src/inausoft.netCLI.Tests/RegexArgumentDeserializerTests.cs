@@ -25,7 +25,7 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            var command = deserializer.Deserialize<Command1>(string.Join(" ", args));
+            var command = deserializer.Deserialize<Command1>(args);
 
             //Assert
             Assert.IsTrue(command.BoolOption);
@@ -49,7 +49,7 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            var command = deserializer.Deserialize<Command1>(string.Join(" ", args));
+            var command = deserializer.Deserialize<Command1>(args);
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
@@ -68,7 +68,7 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            deserializer.Deserialize<Command1>(string.Join(" ", args));
+            deserializer.Deserialize<Command1>(args);
 
             //Assert with exception
         }
@@ -89,7 +89,7 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            deserializer.Deserialize<Command1>(string.Join(" ", args));
+            deserializer.Deserialize<Command1>(args);
 
             //Assert with exception
         }

@@ -60,7 +60,7 @@ namespace inausoft.netCLI
                 throw new InvalidCommandException(args[0], $"Command {args[0]} was not mapped.");
             }
 
-            var command = config.Deserializer.Deserialize(commandType, string.Join(" ", args.Skip(1)));
+            var command = config.Deserializer.Deserialize(commandType, args.Skip(1).ToArray());
 
             var handler = serviceProvider.GetRequiredService(config._commandMap[command.GetType()]) as ICommandHandler;
 
@@ -83,7 +83,7 @@ namespace inausoft.netCLI
                 throw new InvalidCommandException(args[0], $"Command {args[0]} was not mapped.");
             }
 
-            var command = config.Deserializer.Deserialize(commandType, string.Join(" ", args.Skip(1)));
+            var command = config.Deserializer.Deserialize(commandType, args.Skip(1).ToArray());
 
             var handler = handlers.First(it => it.GetType() == config._commandMap[command.GetType()]) as ICommandHandler;
 

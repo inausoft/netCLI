@@ -10,9 +10,14 @@ namespace inausoft.netCLI.Deserialization
 
         private const string ValidationPattern = @"^(\s?--\S+(\s\w\S*)?)*$";
 
-        public T Deserialize<T>(string argumentExpression) where T: class
+        public T Deserialize<T>(string[] args) where T: class
         {
-            return Deserialize(typeof(T), argumentExpression) as T;
+            return Deserialize(typeof(T), args) as T;
+        }
+
+        public object Deserialize(Type type, string[] args)
+        {
+            return Deserialize(type, string.Join(" ", args));
         }
 
         public object Deserialize(Type type, string optionsExpression)
