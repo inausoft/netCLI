@@ -1,6 +1,6 @@
 # netCLI
 
-![Logo](inausoft.netCLI.all/inausoft.netCLI/assets/netCLI.png)
+![Logo](src/inausoft.netCLI/assets/netCLI.png)
 
 netCLI is a lightweight library meant to facilitate command line arguments parsing and flow control over .net CLI applications.
 
