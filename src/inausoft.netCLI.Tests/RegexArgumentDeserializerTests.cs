@@ -22,7 +22,7 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", intOptionValue.ToString()
                             };
 
-            var deserializer = new RegexArgumentDeserializer();
+            var deserializer = new RegexOptionsDeserializer();
 
             //Act
             var command = deserializer.Deserialize<Command1>(string.Join(" ", args));
@@ -46,7 +46,7 @@ namespace inausoft.netCLI.Tests
                                 "--stringOption", stringOptionValue
                             };
 
-            var deserializer = new RegexArgumentDeserializer();
+            var deserializer = new RegexOptionsDeserializer();
 
             //Act
             var command = deserializer.Deserialize<Command1>(string.Join(" ", args));
@@ -65,7 +65,7 @@ namespace inausoft.netCLI.Tests
                                 "--boolOptionXX", "true",
                             };
 
-            var deserializer = new RegexArgumentDeserializer();
+            var deserializer = new RegexOptionsDeserializer();
 
             //Act
             deserializer.Deserialize<Command1>(string.Join(" ", args));
@@ -86,7 +86,7 @@ namespace inausoft.netCLI.Tests
                                 optionsExpression,
                             };
 
-            var deserializer = new RegexArgumentDeserializer();
+            var deserializer = new RegexOptionsDeserializer();
 
             //Act
             deserializer.Deserialize<Command1>(string.Join(" ", args));

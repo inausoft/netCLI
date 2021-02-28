@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
-    public class RegexArgumentDeserializer : IArgumentDeserializer
+    public class RegexOptionsDeserializer : IOptionsDeserializer
     {
         private const string OptionsPattern = @"--(\S+)\s?(\w\S*)*";
 
@@ -19,6 +17,16 @@ namespace inausoft.netCLI.Deserialization
 
         public object Deserialize(Type type, string optionsExpression)
         {
+            if(type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (optionsExpression == null)
+            {
+                throw new ArgumentNullException(nameof(optionsExpression));
+            }
+
             if (!ValidateOptionsExpression(optionsExpression))
             {
                 throw new FormatException($"{nameof(optionsExpression)} has invalid format.");

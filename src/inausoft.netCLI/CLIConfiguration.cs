@@ -8,7 +8,7 @@ namespace inausoft.netCLI
     {
         internal readonly Dictionary<Type, Type> _commandMap;
 
-        public IArgumentDeserializer Deserializer { get; private set; }
+        public IOptionsDeserializer Deserializer { get; private set; }
 
         public IEnumerable<Type> CommandTypes
         {
@@ -21,7 +21,7 @@ namespace inausoft.netCLI
         public CLIConfiguration()
         {
             _commandMap = new Dictionary<Type, Type>();
-            Deserializer = new RegexArgumentDeserializer();
+            Deserializer = new RegexOptionsDeserializer();
         }
 
         public CLIConfiguration Map<T1, T2>() where T1 : class where T2 : CommandHandler<T1>
@@ -31,7 +31,7 @@ namespace inausoft.netCLI
             return this;
         }
 
-        public CLIConfiguration MapDeserialiser(IArgumentDeserializer deserializer)
+        public CLIConfiguration MapDeserialiser(IOptionsDeserializer deserializer)
         {
             Deserializer = deserializer;
 
