@@ -15,14 +15,14 @@ namespace inausoft.netCLI
         /// <param name="services"></param>
         /// <param name="SetupHelpCommand"></param>
         /// <returns></returns>
-        public static IServiceCollection AddCLI(this IServiceCollection services, Action<CliConfiguration> setup)
+        public static IServiceCollection AddCLI(this IServiceCollection services, Action<CLIConfiguration> setup)
         {
             if (services == null)
             {
                 throw new ArgumentNullException($"{nameof(services)} cannot be null.");
             }
 
-            CliConfiguration configuration = new CliConfiguration();
+            CLIConfiguration configuration = new CLIConfiguration();
 
             setup(configuration);
 
@@ -44,11 +44,11 @@ namespace inausoft.netCLI
         /// <returns></returns>
         public static int RunCLI(this IServiceProvider serviceProvider, string[] args)
         {
-            var config = serviceProvider.GetService<CliConfiguration>();
+            var config = serviceProvider.GetService<CLIConfiguration>();
 
             if (config == null)
             {
-                throw new InvalidOperationException($"{nameof(CliConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
+                throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
             }
 
             var commandType = config._commandMap.Keys.FirstOrDefault(it =>
@@ -67,11 +67,11 @@ namespace inausoft.netCLI
             return handler.Run(command);
         }
 
-        public static int RunCLI(CliConfiguration config, string[] args, params ICommandHandler[] handlers)
+        public static int RunCLI(CLIConfiguration config, string[] args, params ICommandHandler[] handlers)
         {
             if (config == null)
             {
-                throw new InvalidOperationException($"{nameof(CliConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
+                throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
             }
 
             var commandType = config._commandMap.Keys.FirstOrDefault(it =>
@@ -90,7 +90,7 @@ namespace inausoft.netCLI
             return handler.Run(command);
         }
 
-        public static CliConfiguration MapHelpCommand(this CliConfiguration config)
+        public static CLIConfiguration MapHelpCommand(this CLIConfiguration config)
         {
             return config.Map<HelpCommand, HelpCommandHandler>();
         }

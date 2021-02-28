@@ -22,7 +22,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
             var result = netCLI.RunCLI(config, args, mockCommandHandler);
@@ -49,7 +49,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
             var result = netCLI.RunCLI(config, args, mockCommandHandler);
@@ -73,7 +73,7 @@ namespace inausoft.netCLI.Tests
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
-            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>()
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>()
                                                .Map<Command2, MockCommand2Handler>();
 
             //Act
@@ -103,7 +103,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
             netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
@@ -123,7 +123,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new CliConfiguration().Map<Command1, MockCommand1Handler>();
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
             netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
