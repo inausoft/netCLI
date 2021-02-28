@@ -2,8 +2,6 @@
 using inausoft.netCLI.Tests.Mocks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace inausoft.netCLI.Tests
 {
@@ -11,7 +9,7 @@ namespace inausoft.netCLI.Tests
     public class RegexArgumentDeserializerTests
     {
         [TestMethod]
-        public void RootCommandHandler_RunsProperCommandHandler_ForMultipleOptions()
+        public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -39,7 +37,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         [DataRow("s")]
         [DataRow(@"C:\Program%Files")]
-        public void RootCommandHandler_RunsProperCommandHandler_ForStringOptions(string stringOptionValue)
+        public void RegexArgumentHandler_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
             //Arrange
 
@@ -55,6 +53,45 @@ namespace inausoft.netCLI.Tests
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
+        }
+
+        [ExpectedException(typeof(InvalidOptionException))]
+        [TestMethod]
+        public void RegexArgumentHandler_ThrowsInvalidOptionException_ForInvalidOption()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "--boolOptionXX", "true",
+                            };
+
+            var deserializer = new RegexArgumentDeserializer();
+
+            //Act
+            deserializer.Deserialize<Command1>(string.Join(" ", args));
+
+            //Assert with exception
+        }
+
+        [ExpectedException(typeof(FormatException))]
+        [TestMethod]
+        [DataRow("random_string_winth_no_options")]
+        [DataRow("command --option optionvalue")]
+        [DataRow("--optionX optionXvalue --optionY optionYvalue random_string_at_the_end")]
+        public void RegexArgumentHandler_ThrowsArgumentException_ForInvalidInputArgs(string optionsExpression)
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                optionsExpression,
+                            };
+
+            var deserializer = new RegexArgumentDeserializer();
+
+            //Act
+            deserializer.Deserialize<Command1>(string.Join(" ", args));
+
+            //Assert with exception
         }
     }
 }

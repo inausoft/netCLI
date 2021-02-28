@@ -1,10 +1,11 @@
 using inausoft.netCLI.Tests.Mocks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace inausoft.netCLI.Tests
 {
     [TestClass]
-    public class RootCommandHandlerTests
+    public class netCLITests
     {
         [TestMethod]
         public void RootCommandHandler_RunsProperCommandHandler_ForMultipleOptions()
@@ -37,28 +38,38 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RootCommandHandler_RunsProperCommandHandler_ForDifferentStringOptions()
+        public void netCLI_RunsProperCommandHandler_WhenSetupUsingDI()
         {
             //Arrange
-            var stringOptionValue = "s";
+            var stringOptionValue = "sampleString";
+            var intOptionValue = 102;
 
             var args = new string[]
                             {
                                 "command1",
-                                "--stringOption", stringOptionValue
+                                "--boolOption",
+                                "--stringOption", stringOptionValue,
+                                "--intOption", intOptionValue.ToString()
                             };
 
-            var mockCommandHandler = new MockCommand1Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+            var services = new ServiceCollection();
+            services.AddCLI(config => {
+                config.Map<Command1, MockCommand1Handler>();
+            });
+
+            var provider = services.BuildServiceProvider();
 
             //Act
-            var result = netCLI.RunCLI(config, args, mockCommandHandler);
+            var result = provider.RunCLI(args);
 
             //Assert
+            var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
+
             Assert.AreEqual(0, result);
+            Assert.IsTrue(mockCommandHandler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
-
+            Assert.AreEqual(intOptionValue, mockCommandHandler.LastRunParameters.IntOption);
         }
 
         [TestMethod]

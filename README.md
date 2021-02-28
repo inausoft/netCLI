@@ -4,9 +4,23 @@
 
 netCLI is a lightweight library meant to facilitate command line arguments parsing and flow control over .net CLI applications.
 
-C# Quick Start:
+##Quick Start:
 
-```cs
+```
+ICommandHandler[] handlers = new ICommandHandler[] { 
+    new MoveCommandHandler() 
+};
+
+var config = new CliConfiguration().Map<MoveCommand, MoveCommandHandler>();
+
+return netCLI.RunCLI(config, args, handlers);
+
+```
+
+
+##Using dependency injection:
+
+```
 using inausoft.netCLI;
 using Microsoft.Extensions.DependencyInjection;
 using System;

@@ -8,18 +8,25 @@ namespace inausoft.netCLI.Deserialization
 {
     public class RegexArgumentDeserializer : IArgumentDeserializer
     {
-        private static string optionsPattern = @"--(\S+)\s?(\w\S*)*";
+        private const string OptionsPattern = @"--(\S+)\s?(\w\S*)*";
+
+        private const string ValidationPattern = @"^(\s?--\S+(\s\w\S*)?)*$";
 
         public T Deserialize<T>(string argumentExpression) where T: class
         {
             return Deserialize(typeof(T), argumentExpression) as T;
         }
 
-        public object Deserialize(Type type, string argumentExpression)
+        public object Deserialize(Type type, string optionsExpression)
         {
+            if (!ValidateOptionsExpression(optionsExpression))
+            {
+                throw new FormatException($"{nameof(optionsExpression)} has invalid format.");
+            }
+
             var command = Activator.CreateInstance(type);
 
-            var options = new Regex(optionsPattern).Matches(argumentExpression);
+            var options = new Regex(OptionsPattern).Matches(optionsExpression);
 
             foreach (Match option in options)
             {
@@ -45,6 +52,11 @@ namespace inausoft.netCLI.Deserialization
             }
 
             return command;
+        }
+
+        private bool ValidateOptionsExpression(string optionsExpression)
+        {
+            return new Regex(ValidationPattern).IsMatch(optionsExpression);
         }
     }
 }
