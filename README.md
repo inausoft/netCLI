@@ -81,3 +81,4 @@ namespace ConsoleApp1
 # Contributors
 
 - Iwanowski, Marcin
+- Kaczor, Mateusz (matiduck)
