@@ -3,16 +3,13 @@
     [Command("command1")]
     class Command1
     {
-        [OptionAttribute("boolOption")]
+        [Option("boolOption")]
         public bool BoolOption { get; set; }
 
-        [OptionAttribute("stringOption")]
+        [Option("stringOption")]
         public string StringOption { get; set; }
 
-        [OptionAttribute("pathOption")]
-        public string PathOption { get; set; }
-
-        [OptionAttribute("intOption")]
+        [Option("intOption")]
         public int IntOption { get; set; }
 
         public string NotOptionProperty { get; set; }

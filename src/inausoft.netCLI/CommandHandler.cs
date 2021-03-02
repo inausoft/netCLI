@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace inausoft.netCLI
+﻿namespace inausoft.netCLI
 {
     public interface ICommandHandler
     {
-        Type GetCommandType();
-
         int Run(object command);
     }
 
@@ -16,11 +12,6 @@ namespace inausoft.netCLI
         public int Run(object command)
         {
             return Run(command as T);
-        }
-
-        public Type GetCommandType()
-        {
-            return typeof(T);
         }
     }
 }
