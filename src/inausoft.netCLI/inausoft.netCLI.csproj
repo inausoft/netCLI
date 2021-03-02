@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Iwanowski, Marcin</Authors>
+    <Authors>Iwanowski Marcin, Kaczor Mateusz</Authors>
     <PackageProjectUrl>https://github.com/inausoft/netCLI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inausoft/netCLI</RepositoryUrl>
     <PackageTags>CLI command line parsing</PackageTags>
-    <Version>1.0.0</Version>
+    <Version>1.0.0-rc.16</Version>
     <Description>Lightweight library meant for facilitate command line arguments parsing and flow control over .net CLI applications</Description>
     <PackageIcon>netCLI.png</PackageIcon>
     <PackageIconUrl />
@@ -16,6 +16,7 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReleaseNotes>- First alpha release.</PackageReleaseNotes>
+    <Company>inausoft &amp; contributors</Company>
   </PropertyGroup>
 
   <ItemGroup>

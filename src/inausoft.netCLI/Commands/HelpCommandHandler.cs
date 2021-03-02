@@ -31,15 +31,24 @@ namespace inausoft.netCLI.Commands
 
             if (string.IsNullOrEmpty(command.SpecifiedCommandName))
             {
+                StringBuilder message = new StringBuilder();
+                message.AppendLine("Available commands:");
+                message.AppendLine();
+
                 foreach (var commandType in _configuration.CommandTypes)
                 {
                     if (Attribute.IsDefined(commandType, typeof(CommandAttribute)))
                     {
-                        CommandAttribute attribute = Attribute.GetCustomAttribute(commandType, typeof(CommandAttribute)) as CommandAttribute;
+                        CommandAttribute commadType = Attribute.GetCustomAttribute(commandType, typeof(CommandAttribute)) as CommandAttribute;
 
-                        _logger.LogInformation($"{attribute.Name} \t\t {attribute.HelpDescription}");
+                        message.AppendLine(string.Format("{0, -15} {1}", commadType.Name, commadType.HelpDescription));
                     }
                 }
+
+                message.AppendLine();
+                message.AppendLine($"Run 'help --command <commandName>' for detailed information.");
+
+                _logger.LogInformation(message.ToString());
             }
             else
             {
@@ -52,22 +61,24 @@ namespace inausoft.netCLI.Commands
                     throw new InvalidCommandException(command.SpecifiedCommandName, $"Command {command.SpecifiedCommandName} is invalid.");
                 }
 
-                StringBuilder message = new StringBuilder($"{command.SpecifiedCommandName}");
+                StringBuilder message = new StringBuilder($"Usage: {command.SpecifiedCommandName}");
 
                 var properties = commandType.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
 
-                if(properties != null)
+                if(properties.Any())
                 {
                     message.AppendLine(" [OPTIONS]");
+                    message.AppendLine();
                     message.AppendLine("options:");
+
+                    foreach (var property in properties)
+                    {
+                        var option = (Attribute.GetCustomAttribute(property, typeof(OptionAttribute)) as OptionAttribute);
+                        message.AppendLine(string.Format("--{0, -15} {1}", option.Name, option.HelpDescription));
+                    }
                 }
 
-                foreach(var property in properties)
-                {
-                    var option = (Attribute.GetCustomAttribute(property, typeof(OptionAttribute)) as OptionAttribute);
-                    message.AppendLine($" --{option.Name} \t\t {option.HelpDescription}");
-                }
-
+                message.AppendLine();
                 _logger.LogInformation(message.ToString());
             }
             

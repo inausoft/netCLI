@@ -31,7 +31,7 @@ namespace inausoft.netCLI
             return this;
         }
 
-        public CLIConfiguration MapDeserialiser(IOptionsDeserializer deserializer)
+        public CLIConfiguration MapDeserializer(IOptionsDeserializer deserializer)
         {
             Deserializer = deserializer;
 

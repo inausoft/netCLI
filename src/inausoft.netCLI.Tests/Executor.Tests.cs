@@ -8,7 +8,7 @@ namespace inausoft.netCLI.Tests
     public class netCLITests
     {
         [TestMethod]
-        public void RootCommandHandler_RunsProperCommandHandler_ForMultipleOptions()
+        public void Executor_RunCLI_ShouldRunProperCommandHandler_ForMultipleOptions()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -26,10 +26,10 @@ namespace inausoft.netCLI.Tests
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            var result = netCLI.RunCLI(config, args, mockCommandHandler);
+            var result = Executor.RunCLI(config, args, mockCommandHandler);
 
             //Assert
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
             Assert.IsTrue(mockCommandHandler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
@@ -38,7 +38,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void netCLI_RunsProperCommandHandler_WhenSetupUsingDI()
+        public void Executor_RunCLI_ShouldRunProperCommandHandler_WhenSetupUsingDI()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -65,7 +65,7 @@ namespace inausoft.netCLI.Tests
             //Assert
             var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
 
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
             Assert.IsTrue(mockCommandHandler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
@@ -73,7 +73,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RootCommandHandler_RunsOnlyProperCommandHandler_WhenMultipleCommandHandlersAreRegistrated()
+        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreRegistrated()
         {
             //Arrange
             var args = new string[]
@@ -88,10 +88,10 @@ namespace inausoft.netCLI.Tests
                                                .Map<Command2, MockCommand2Handler>();
 
             //Act
-            var result = netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand2Handler);
+            var result = Executor.RunCLI(config, args, mockCommand1Handler, mockCommand2Handler);
 
             //Assert
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
 
             Assert.IsNull(mockCommand2Handler.LastRunParameters);
 
@@ -104,7 +104,7 @@ namespace inausoft.netCLI.Tests
 
         [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
-        public void RootCommandHandler_ThrowsInvalidCommmandException_ForNotRegistratedCommand()
+        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotRegistratedCommand()
         {
             //Arrange
             var args = new string[]
@@ -117,14 +117,30 @@ namespace inausoft.netCLI.Tests
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+
+            //Assert with exception
+        }
+
+        [ExpectedException(typeof(InvalidCommandException))]
+        [TestMethod]
+        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForEmptyArguments()
+        {
+            //Arrange
+            var args = new string[] { };
+
+            var mockCommand1Handler = new MockCommand1Handler();
+            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+
+            //Act
+            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
 
             //Assert with exception
         }
 
         [ExpectedException(typeof(InvalidOptionException))]
         [TestMethod]
-        public void RootCommandHandler_ThrowsInvalidOptionException_ForInvalidOption()
+        public void Executor_RunCLI_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
@@ -137,7 +153,7 @@ namespace inausoft.netCLI.Tests
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            netCLI.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
 
             //Assert with exception
         }

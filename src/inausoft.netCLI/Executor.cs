@@ -1,13 +1,10 @@
-﻿using inausoft.netCLI.Commands;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace inausoft.netCLI
 {
-    public static class netCLI
+    public static class Executor
     {
         /// <summary>
         /// Setups CLI flow by adding and configuring <see cref="RootCommandHandler"/>.
@@ -51,6 +48,12 @@ namespace inausoft.netCLI
                 throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
             }
 
+            if (!args.Any())
+            {
+                //TODO Add default handling here
+                throw new InvalidCommandException($"Command was not specified.");
+            }
+
             var commandType = config._commandMap.Keys.FirstOrDefault(it =>
                 Attribute.IsDefined(it, typeof(CommandAttribute)) &&
                 (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
@@ -74,6 +77,12 @@ namespace inausoft.netCLI
                 throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
             }
 
+            if (!args.Any())
+            {
+                //TODO Add default handling here
+                throw new InvalidCommandException($"Command was not specified.");
+            }
+
             var commandType = config._commandMap.Keys.FirstOrDefault(it =>
                 Attribute.IsDefined(it, typeof(CommandAttribute)) &&
                 (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
@@ -89,11 +98,5 @@ namespace inausoft.netCLI
 
             return handler.Run(command);
         }
-
-        public static CLIConfiguration MapHelpCommand(this CLIConfiguration config)
-        {
-            return config.Map<HelpCommand, HelpCommandHandler>();
-        }
-
     }
 }
