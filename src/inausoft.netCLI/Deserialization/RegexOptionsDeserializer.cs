@@ -50,7 +50,9 @@ namespace inausoft.netCLI.Deserialization
 
                 if (property == null)
                 {
-                    throw new InvalidOptionException(optionName, $"Option {optionName} was not defined for {type}");
+                    var commandName = (Attribute.GetCustomAttribute(type, typeof(CommandAttribute)) as CommandAttribute).Name;
+
+                    throw new InvalidOptionException(commandName, optionName, $"Option {optionName} was not defined for {type}");
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'

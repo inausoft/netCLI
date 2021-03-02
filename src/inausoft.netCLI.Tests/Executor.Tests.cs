@@ -101,15 +101,15 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
         }
 
-
-        [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotRegistratedCommand()
         {
+            var invalidCommandName = "invalidCommandName";
+
             //Arrange
             var args = new string[]
                             {
-                                "commandXX",
+                                invalidCommandName,
                                 "--boolOption", "true",
                             };
 
@@ -117,12 +117,12 @@ namespace inausoft.netCLI.Tests
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            var ex = Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
-            //Assert with exception
+            //Assert
+            Assert.AreEqual(invalidCommandName, ex.CommandName);
         }
 
-        [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForEmptyArguments()
         {
@@ -133,29 +133,33 @@ namespace inausoft.netCLI.Tests
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
             //Assert with exception
         }
 
-        [ExpectedException(typeof(InvalidOptionException))]
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
             //Arrange
+            var invalidOptionName = "invalidOption";
+            var commandName = "command1";
+
             var args = new string[]
                             {
-                                "command1",
-                                "--boolOptionXX", "true",
+                                commandName,
+                                $"--{invalidOptionName}", "true",
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
             //Act
-            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            var ex = Assert.ThrowsException<InvalidOptionException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
             //Assert with exception
+            Assert.AreEqual(commandName, ex.CommandName);
+            Assert.AreEqual(invalidOptionName, ex.OptionName);
         }
     }
 }
