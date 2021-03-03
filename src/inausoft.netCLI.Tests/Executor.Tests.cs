@@ -73,7 +73,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreRegistrated()
+        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMaped()
         {
             //Arrange
             var args = new string[]
@@ -102,7 +102,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotRegistratedCommand()
+        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotMapedCommand()
         {
             var invalidCommandName = "invalidCommandName";
 
@@ -116,10 +116,9 @@ namespace inausoft.netCLI.Tests
             var mockCommand1Handler = new MockCommand1Handler();
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
-            //Act
+            //Act & Assert
             var ex = Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
-            //Assert
             Assert.AreEqual(invalidCommandName, ex.CommandName);
         }
 
@@ -132,10 +131,8 @@ namespace inausoft.netCLI.Tests
             var mockCommand1Handler = new MockCommand1Handler();
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
-            //Act
+            //Act & Assert
             Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
-
-            //Assert with exception
         }
 
         [TestMethod]
@@ -154,10 +151,9 @@ namespace inausoft.netCLI.Tests
             var mockCommand1Handler = new MockCommand1Handler();
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
-            //Act
+            //Act & Assert
             var ex = Assert.ThrowsException<InvalidOptionException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
-            //Assert with exception
             Assert.AreEqual(commandName, ex.CommandName);
             Assert.AreEqual(invalidOptionName, ex.OptionName);
         }

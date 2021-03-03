@@ -8,10 +8,13 @@ namespace inausoft.netCLI
 
         public string CommandName { get; }
 
-        public InvalidOptionException(string commandName, string optionName, string message = null) : base(message)
+        public InvalidOptionException(string commandName, string optionName, string message) : base(message)
         {
             OptionName = optionName;
             CommandName = commandName;
         }
+
+        public InvalidOptionException(string commandName, string optionName)
+            : this(commandName, optionName, $"Option {optionName} in not defined for command {commandName}") { }
     }
 }
