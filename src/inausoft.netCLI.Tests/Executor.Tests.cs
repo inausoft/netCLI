@@ -80,6 +80,8 @@ namespace inausoft.netCLI.Tests
                             {
                                 "command1",
                                 "--boolOption", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
@@ -152,10 +154,11 @@ namespace inausoft.netCLI.Tests
             var mockCommand1Handler = new MockCommand1Handler();
             var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
 
-            //Act
-            Executor.RunCLI(config, args, mockCommand1Handler, mockCommand1Handler);
+            //Act & Assert
+            var ex = Assert.ThrowsException<OptionException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
 
-            //Assert with exception
+            Assert.AreEqual(commandName, ex.CommandName);
+            Assert.AreEqual(invalidOptionName, ex.OptionName);
         }
     }
 }

@@ -6,7 +6,7 @@
     [CommandAttribute("help", "Shows details about available commands")]
     public class HelpCommand
     {
-        [OptionAttribute("command")]
+        [Option("command", "Command name for which details should be displayed.", IsOptional = true)]
         public string SpecifiedCommandName { get; set; }
     }
 }

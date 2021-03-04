@@ -41,12 +41,23 @@ namespace inausoft.netCLI.Deserialization
 
             var options = new Regex(OptionsPattern).Matches(optionsExpression);
 
+            var properties = type.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
+
+            foreach(var optionType in properties.Select(it => Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute))
+            {
+                if (!optionType.IsOptional && !optionsExpression.Contains($"--{optionType.Name}"))
+                {
+                    var commandName = (Attribute.GetCustomAttribute(type, typeof(CommandAttribute)) as CommandAttribute).Name;
+
+                    throw new MissingOptionException(commandName, optionType.Name);
+                }
+            }
+
             foreach (Match option in options)
             {
                 var optionName = option.Groups[1].Value;
 
-                var property = type.GetProperties().FirstOrDefault(it => Attribute.IsDefined(it, typeof(OptionAttribute))
-                                                        && (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
+                var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
 
                 if (property == null)
                 {

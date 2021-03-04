@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace inausoft.netCLI
+﻿namespace inausoft.netCLI
 {
-    public class InvalidOptionException : Exception
+    public class InvalidOptionException : OptionException
     {
         public string OptionName { get; }
 

@@ -49,13 +49,13 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            var command = deserializer.Deserialize<Command1>(args);
+            var command = deserializer.Deserialize<Command2>(args);
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
         }
 
-        [ExpectedException(typeof(InvalidOptionException))]
+        [ExpectedException(typeof(OptionException))]
         [TestMethod]
         public void RegexArgumentHandler_ThrowsInvalidOptionException_ForInvalidOption()
         {
