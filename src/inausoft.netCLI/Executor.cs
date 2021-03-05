@@ -23,19 +23,25 @@ namespace inausoft.netCLI
 
         public CLFlow UseFallback(Action<ErrorCode> fallback)
         {
-            _fallbackFunc = fallback;
+            _fallbackFunc = fallback ?? throw new ArgumentNullException(nameof(fallback));
             return this;
         }
 
         public CLFlow UseMapping(Mapping config)
         {
-            _config = config;
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             return this;
         }
 
         public CLFlow UseServiceProvider(IServiceProvider provider)
         {
-            _serviceProvider = provider;
+            _serviceProvider = provider ?? throw new ArgumentOutOfRangeException(nameof(provider));
+            return this;
+        }
+
+        public CLFlow UseDeserializer(IOptionsDeserializer deserializer)
+        {
+            _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
             return this;
         }
 
@@ -69,13 +75,9 @@ namespace inausoft.netCLI
             {
                 command = _deserializer.Deserialize(mappingEntry.CommandType, args.Skip(1).ToArray());
             }
-            catch(InvalidOperationException)
+            catch(DeserializationException ex)
             {
-                return Fallback(ErrorCode.UnrecognizedOption);
-            }
-            catch (FormatException)
-            {
-                return Fallback(ErrorCode.UnrecognizedPattern);
+                return Fallback(ex.ErrorCode.Value);
             }
             catch (Exception)
             {

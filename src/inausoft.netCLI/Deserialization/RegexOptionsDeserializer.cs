@@ -34,7 +34,7 @@ namespace inausoft.netCLI.Deserialization
 
             if (!ValidateOptionsExpression(optionsExpression))
             {
-                throw new FormatException($"{nameof(optionsExpression)} has invalid format.");
+                throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type : {type} - specified option format : {OptionsPattern} is invalid.");
             }
 
             var command = Activator.CreateInstance(type);
@@ -47,9 +47,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 if (!optionType.IsOptional && !optionsExpression.Contains($"--{optionType.Name}"))
                 {
-                    var commandName = (Attribute.GetCustomAttribute(type, typeof(CommandAttribute)) as CommandAttribute).Name;
-
-                    throw new MissingOptionException(commandName, optionType.Name);
+                    throw new DeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type : {type} - option {optionType} is missing.");
                 }
             }
 
@@ -61,7 +59,7 @@ namespace inausoft.netCLI.Deserialization
 
                 if (property == null)
                 {
-                    throw new InvalidOperationException($"Option {optionName} was not defined for {type}");
+                    throw new DeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type : {type} - no option : {optionName} was declared.");
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
