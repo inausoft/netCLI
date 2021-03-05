@@ -11,11 +11,11 @@ namespace inausoft.netCLI.Commands
     /// </summary>
     public class HelpCommandHandler : CommandHandler<HelpCommand>
     {
-        private readonly CLIConfiguration _configuration;
+        private readonly CLIConfiguration2 _configuration;
 
         private readonly ILogger<HelpCommandHandler> _logger;
 
-        public HelpCommandHandler(CLIConfiguration configuration, ILogger<HelpCommandHandler> logger)
+        public HelpCommandHandler(CLIConfiguration2 configuration, ILogger<HelpCommandHandler> logger)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
