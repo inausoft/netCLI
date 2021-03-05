@@ -33,7 +33,7 @@ namespace inausoft.netCLI
             return this;
         }
 
-        public CLFlow UsingServiceProvider(IServiceProvider provider)
+        public CLFlow UseServiceProvider(IServiceProvider provider)
         {
             _serviceProvider = provider;
             return this;

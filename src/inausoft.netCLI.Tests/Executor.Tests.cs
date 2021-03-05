@@ -61,7 +61,7 @@ namespace inausoft.netCLI.Tests
             var provider = services.BuildServiceProvider();
 
             //Act
-            var result = CLFlow.Create().UsingServiceProvider(provider).Run(args);
+            var result = CLFlow.Create().UseServiceProvider(provider).Run(args);
 
             //Assert
             var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
