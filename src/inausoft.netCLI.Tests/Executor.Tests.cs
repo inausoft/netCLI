@@ -81,6 +81,8 @@ namespace inausoft.netCLI.Tests
                             {
                                 "command1",
                                 "--boolOption", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
@@ -95,11 +97,7 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
 
             Assert.IsNull(mockCommand2Handler.LastRunParameters);
-
-            Assert.IsTrue(mockCommand1Handler.LastRunParameters.BoolOption);
-            Assert.IsNull(mockCommand1Handler.LastRunParameters.NotOptionProperty);
-            Assert.IsNull(mockCommand1Handler.LastRunParameters.StringOption);
-            Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
+            Assert.IsNotNull(mockCommand1Handler.LastRunParameters);
         }
 
         [TestMethod]
@@ -145,7 +143,10 @@ namespace inausoft.netCLI.Tests
             var args = new string[]
                             {
                                 "command1",
+                                "--boolOption", "true",
                                 "--boolOptionXX", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();

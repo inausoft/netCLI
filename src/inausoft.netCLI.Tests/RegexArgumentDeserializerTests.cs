@@ -49,20 +49,59 @@ namespace inausoft.netCLI.Tests
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            var command = deserializer.Deserialize<Command1>(args);
+            var command = deserializer.Deserialize<Command2>(args);
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
         }
 
-        [ExpectedException(typeof(InvalidOperationException))]
+        [TestMethod]
+        public void RegexArgumentHandler_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
+        {
+            //Arrange
+
+            var args = new string[]
+                            { };
+
+            var deserializer = new RegexOptionsDeserializer();
+
+            //Act
+            var command = deserializer.Deserialize<Command2>(args);
+
+            //Assert
+            Assert.AreEqual(Command2.SomeDefaultValue, command.StringOption);
+        }
+
+        [ExpectedException(typeof(InvalidOptionException))]
         [TestMethod]
         public void RegexArgumentHandler_ThrowsInvalidOptionException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
                             {
+                                "--boolOption", "true",
                                 "--boolOptionXX", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
+                            };
+
+            var deserializer = new RegexOptionsDeserializer();
+
+            //Act
+            deserializer.Deserialize<Command1>(args);
+
+            //Assert with exception
+        }
+
+        [ExpectedException(typeof(MissingOptionException))]
+        [TestMethod]
+        public void RegexArgumentHandler_ThrowsMissingOptionException_WhenNotAllRequiredOptionsWereSupplied()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "--boolOption", "true",
+                                "--intOption", "1"
                             };
 
             var deserializer = new RegexOptionsDeserializer();
