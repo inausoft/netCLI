@@ -23,7 +23,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1, MockCommand1Handler>(mockCommandHandler);
+            var config = new Mapping().Map<Command1>(mockCommandHandler);
 
             //Act
             var result = CLFlow.Create().UseMapping(config).Run(args);
@@ -85,8 +85,8 @@ namespace inausoft.netCLI.Tests
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
-            var config = new Mapping().Map<Command1, MockCommand1Handler>(mockCommand1Handler)
-                                               .Map<Command2, MockCommand2Handler>(mockCommand2Handler);
+            var config = new Mapping().Map<Command1>(mockCommand1Handler)
+                                      .Map<Command2>(mockCommand2Handler);
 
             //Act
             var result = CLFlow.Create().UseMapping(config).Run(args);
@@ -102,8 +102,6 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
         }
 
-
-        [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotRegistratedCommand()
         {
@@ -115,15 +113,15 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1, MockCommand1Handler>(mockCommand1Handler);
+            var config = new Mapping().Map<Command1>(mockCommand1Handler);
 
             //Act
             var result = CLFlow.Create().UseMapping(config).Run(args);
 
-            //Assert with exception
+            //Assert
+            Assert.AreEqual((int)ErrorCode.UnrecognizedCommand, result);
         }
 
-        [ExpectedException(typeof(InvalidCommandException))]
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForEmptyArguments()
         {
@@ -131,12 +129,13 @@ namespace inausoft.netCLI.Tests
             var args = new string[] { };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1, MockCommand1Handler>(mockCommand1Handler);
+            var config = new Mapping().Map<Command1>(mockCommand1Handler);
 
             //Act
             var result = CLFlow.Create().UseMapping(config).Run(args);
 
-            //Assert with exception
+            //Assert
+            Assert.AreEqual((int)ErrorCode.UnspecifiedCommand, result);
         }
 
         [TestMethod]
@@ -150,14 +149,13 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var mapping = new Mapping().Map<Command1, MockCommand1Handler>(mockCommand1Handler);
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
             //Act
-            var result = CLFlow.Create().UseMapping(mapping)
-                                        .Run(args);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
-            Assert.AreEqual((int)ErrorCode.UnrecognizedCommand, result);
+            Assert.AreEqual((int)ErrorCode.UnrecognizedOption, result);
         }
     }
 }

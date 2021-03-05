@@ -55,7 +55,7 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(stringOptionValue, command.StringOption);
         }
 
-        [ExpectedException(typeof(InvalidOptionException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         [TestMethod]
         public void RegexArgumentHandler_ThrowsInvalidOptionException_ForInvalidOption()
         {

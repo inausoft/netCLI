@@ -83,7 +83,7 @@ namespace inausoft.netCLI
             }
             
 
-            var handler = mappingEntry.HandlerInstance as ICommandHandler;
+            var handler = (mappingEntry.HandlerInstance ?? _serviceProvider.GetRequiredService(mappingEntry.HandlerType)) as ICommandHandler;
 
             return handler.Run(command);
         }
