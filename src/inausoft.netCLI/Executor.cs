@@ -77,7 +77,7 @@ namespace inausoft.netCLI
             }
             catch (DeserializationException ex)
             {
-                return Fallback(ex.ErrorCode.Value);
+                return Fallback(ex.ErrorCode);
             }
             catch (Exception)
             {

@@ -2,7 +2,6 @@
 {
     public enum ErrorCode
     {
-        None = 0,
         Unknown = 1,
         
         UnspecifiedCommand = 10,
