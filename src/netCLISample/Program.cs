@@ -18,9 +18,9 @@ namespace netCLISample
                 builder.SetMinimumLevel(LogLevel.Debug);
                 builder.AddConsole();
             });
-            services.ConfigureCLFlow(config =>
+            services.ConfigureCLFlow(mapping =>
             {
-                config.Map<MoveCommand, MoveCommandHandler>()
+                mapping.Map<MoveCommand, MoveCommandHandler>()
                       .Map<HelpCommand, HelpCommandHandler>();
 
             });
@@ -53,8 +53,14 @@ namespace netCLISample
     [Command("move", "Moves files between locations.")]
     public class MoveCommand
     {
-        [Option("force", "Indicates weather or not files should be overwritten.")]
+        [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
+
+        [Option("from", "Current files locations.")]
+        public string PathFrom { get; set; }
+
+        [Option("to", "Destination path for the files.")]
+        public bool PathTo { get; set; }
     }
 
     public class MoveCommandHandler : CommandHandler<MoveCommand>

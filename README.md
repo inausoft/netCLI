@@ -36,17 +36,17 @@ namespace netCLIConsoleApp
         }
     }
 
-    [Command("move", "Moves files from one path to another.")]
-    class MoveCommand
+    [Command("move", "Moves files between locations.")]
+    public class MoveCommand
     {
-        [Option("pathFrom", "Current files locations.")]
-        public string From { get; set; }
-
-        [Option("pathTo", "Destination path for the files.")]
-        public string To { get; set; }
-
-        [Option("force", "Overrides if files exists.")]
+        [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
+
+        [Option("from", "Current files locations.")]
+        public string PathFrom { get; set; }
+
+        [Option("to", "Destination path for the files.")]
+        public bool PathTo { get; set; }
     }
 
     class MoveCommandHandler : CommandHandler<MoveCommand>
