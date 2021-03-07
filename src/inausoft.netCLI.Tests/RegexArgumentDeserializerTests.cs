@@ -112,7 +112,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        [DataRow("random_string_winth_no_options")]
+        [DataRow("random_string_with_no_options")]
         [DataRow("command --option optionvalue")]
         [DataRow("--optionX optionXvalue --optionY optionYvalue random_string_at_the_end")]
         public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string optionsExpression)

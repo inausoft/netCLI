@@ -29,22 +29,22 @@ namespace inausoft.netCLI
             Entries = new List<MappingEntry>();
         }
 
-        public Mapping Map<T1, T2>() where T1 : class where T2 : CommandHandler<T1>
+        public Mapping Map<TCommand, THandler>() where TCommand : class where THandler : CommandHandler<TCommand>
         {
             Entries.Add(new MappingEntry()
             {
-                CommandType = typeof(T1),
-                HandlerType = typeof(T2),
+                CommandType = typeof(TCommand),
+                HandlerType = typeof(THandler),
             });
 
             return this;
         }
 
-        public Mapping Map<T1>(CommandHandler<T1> implementation) where T1 : class
+        public Mapping Map<TCommand>(CommandHandler<TCommand> implementation) where TCommand : class
         {
             Entries.Add(new MappingEntry()
             {
-                CommandType = typeof(T1),
+                CommandType = typeof(TCommand),
                 HandlerType = implementation.GetType(),
                 HandlerInstance = implementation
             });

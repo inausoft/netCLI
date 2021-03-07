@@ -29,13 +29,10 @@ namespace netCLIConsoleApp
     {
         static int Main(string[] args)
         {
-            ICommandHandler[] handlers = new ICommandHandler[] {
-                new MoveCommandHandler()
-            };
+            var mapping = new CLIConfiguration().Map<MoveCommand>(new MoveCommandHandler());
 
-            var config = new CLIConfiguration().Map<MoveCommand, MoveCommandHandler>();
-
-            return Executor.RunCLI(config, args, handlers);
+            return CLFlow.Create().UseMapping(mapping)
+                                  .Run(args);
         }
     }
 
@@ -69,27 +66,31 @@ namespace netCLIConsoleApp
 ## Using dependency injection:
 
 ```cs
-using inausoft.netCLI;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+...
 
 namespace ConsoleApp1
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             var services = new ServiceCollection();
-            services.AddCLI(config => {
-                config.Map<MoveCommand, MoveCommandHandler>();
+            services.ConfigureCLFlow(mapping =>
+            {
+                mapping.Map<MoveCommand, MoveCommandHandler>()
+                       .Map<HelpCommand, HelpCommandHandler>();
+
             });
 
-            var provider = services.BuildServiceProvider();
-
-            return provider.RunCLI(args);
+            using( var provider = services.BuildServiceProvider())
+            {
+                return CLFlow.Create().UseServiceProvider(provider)
+                                      .Run(args);
+            }
         }
     }
 }
+...
 
 ```
 

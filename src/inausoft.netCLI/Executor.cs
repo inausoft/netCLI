@@ -27,9 +27,9 @@ namespace inausoft.netCLI
             return this;
         }
 
-        public CLFlow UseMapping(Mapping config)
+        public CLFlow UseMapping(Mapping mapping)
         {
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            _config = mapping ?? throw new ArgumentNullException(nameof(mapping));
             return this;
         }
 
@@ -75,7 +75,7 @@ namespace inausoft.netCLI
             {
                 command = _deserializer.Deserialize(mappingEntry.CommandType, args.Skip(1).ToArray());
             }
-            catch(DeserializationException ex)
+            catch (DeserializationException ex)
             {
                 return Fallback(ex.ErrorCode.Value);
             }
@@ -83,7 +83,7 @@ namespace inausoft.netCLI
             {
                 return Fallback(ErrorCode.Unknown);
             }
-            
+
 
             var handler = (mappingEntry.HandlerInstance ?? _serviceProvider.GetRequiredService(mappingEntry.HandlerType)) as ICommandHandler;
 
@@ -103,7 +103,7 @@ namespace inausoft.netCLI
         }
     }
 
-    public static class netCLI
+    public static class ServiceCollectionExtentions
     {
         public static IServiceCollection ConfigureCLFlow(this IServiceCollection services, Action<Mapping> setup)
         {

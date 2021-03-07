@@ -23,7 +23,7 @@ namespace inausoft.netCLI.Commands
 
         public override int Run(HelpCommand command)
         {
-            if(command == null)
+            if (command == null)
             {
                 throw new ArgumentNullException(nameof(command));
             }
@@ -38,7 +38,7 @@ namespace inausoft.netCLI.Commands
 
                 foreach (var commandInfo in _configuration.CommandInfos)
                 {
-                    message.AppendLine(string.Format("{0, -15} {1}", commandInfo.Command.Name, commandInfo.Command.HelpDescription));
+                    message.AppendLine(string.Format(" {0, -15} {1}", commandInfo.Command.Name, commandInfo.Command.HelpDescription));
                 }
 
                 message.AppendLine();
@@ -62,7 +62,7 @@ namespace inausoft.netCLI.Commands
                 message.AppendLine($"{command.SpecifiedCommandName} - {commandInfo.Command.HelpDescription}");
                 message.Append($"Usage: {command.SpecifiedCommandName}");
 
-                if(commandInfo.Options.Any())
+                if (commandInfo.Options.Any())
                 {
                     message.AppendLine(" [OPTIONS]");
                     message.AppendLine();
@@ -77,7 +77,7 @@ namespace inausoft.netCLI.Commands
                 message.AppendLine();
                 _logger.LogInformation(message.ToString());
             }
-            
+
             return 0;
         }
     }

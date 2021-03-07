@@ -23,10 +23,10 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1>(mockCommandHandler);
+            var mapping = new Mapping().Map<Command1>(mockCommandHandler);
 
             //Act
-            var result = CLFlow.Create().UseMapping(config).Run(args);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
@@ -53,9 +53,9 @@ namespace inausoft.netCLI.Tests
                             };
 
             var services = new ServiceCollection();
-            services.ConfigureCLFlow(config =>
+            services.ConfigureCLFlow(mapping =>
             {
-                config.Map<Command1, MockCommand1Handler>();
+                mapping.Map<Command1, MockCommand1Handler>();
             });
 
             var provider = services.BuildServiceProvider();
@@ -87,11 +87,11 @@ namespace inausoft.netCLI.Tests
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
-            var config = new Mapping().Map<Command1>(mockCommand1Handler)
-                                      .Map<Command2>(mockCommand2Handler);
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler)
+                                       .Map<Command2>(mockCommand2Handler);
 
             //Act
-            var result = CLFlow.Create().UseMapping(config).Run(args);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
@@ -111,10 +111,10 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1>(mockCommand1Handler);
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
             //Act
-            var result = CLFlow.Create().UseMapping(config).Run(args);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual((int)ErrorCode.UnrecognizedCommand, result);
@@ -127,10 +127,10 @@ namespace inausoft.netCLI.Tests
             var args = new string[] { };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new Mapping().Map<Command1>(mockCommand1Handler);
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
             //Act
-            var result = CLFlow.Create().UseMapping(config).Run(args);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual((int)ErrorCode.UnspecifiedCommand, result);
