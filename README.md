@@ -99,6 +99,6 @@ namespace ConsoleApp1
 
 # Contributors
 
-- Iwanowski, Marcin
+- Iwanowski, Marcin (MarcinIN)
 - Kaczor, Mateusz (matiduck)
 - Marlewski, Jan (jmarlew)
