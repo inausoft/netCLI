@@ -6,7 +6,7 @@ namespace inausoft.netCLI.Deserialization
     {
         public ErrorCode ErrorCode { get; }
 
-        public DeserializationException(ErrorCode errorCode, string message) : base(message)
+        public DeserializationException(ErrorCode errorCode, string message = null) : base(message)
         {
             ErrorCode = errorCode;
         }

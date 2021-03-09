@@ -82,9 +82,12 @@ namespace ConsoleApp1
 
             });
 
-            using( var provider = services.BuildServiceProvider())
+            using (ServiceProvider provider = services.BuildServiceProvider())
             {
+                logger = provider.GetRequiredService<ILogger<Program>>();
+
                 return CLFlow.Create().UseServiceProvider(provider)
+                                      .UseFallback(ErrorHandling)
                                       .Run(args);
             }
         }

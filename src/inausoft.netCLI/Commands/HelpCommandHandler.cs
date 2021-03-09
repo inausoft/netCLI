@@ -10,13 +10,13 @@ namespace inausoft.netCLI.Commands
     /// </summary>
     public class HelpCommandHandler : CommandHandler<HelpCommand>
     {
-        private readonly Mapping _configuration;
+        private readonly Mapping _mapping;
 
         private readonly ILogger<HelpCommandHandler> _logger;
 
-        public HelpCommandHandler(Mapping configuration, ILogger<HelpCommandHandler> logger)
+        public HelpCommandHandler(Mapping mapping, ILogger<HelpCommandHandler> logger)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -28,15 +28,14 @@ namespace inausoft.netCLI.Commands
                 throw new ArgumentNullException(nameof(command));
             }
 
-            if (string.IsNullOrEmpty(command.SpecifiedCommandName))
+            if (string.IsNullOrWhiteSpace(command.SpecifiedCommandName))
             {
                 //List all available commands.
-
                 StringBuilder message = new StringBuilder();
                 message.AppendLine("Available commands:");
                 message.AppendLine();
 
-                foreach (var commandInfo in _configuration.CommandInfos)
+                foreach (var commandInfo in _mapping.CommandInfos)
                 {
                     message.AppendLine(string.Format(" {0, -15} {1}", commandInfo.Command.Name, commandInfo.Command.HelpDescription));
                 }
@@ -49,8 +48,7 @@ namespace inausoft.netCLI.Commands
             else
             {
                 //Display detailed help for one specified command.
-
-                var commandInfo = _configuration.CommandInfos.FirstOrDefault(it => it.Command.Name == command.SpecifiedCommandName);
+                var commandInfo = _mapping.CommandInfos.FirstOrDefault(it => it.Command.Name == command.SpecifiedCommandName);
 
                 if (commandInfo == null)
                 {

@@ -74,7 +74,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMaped()
+        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMapped()
         {
             //Arrange
             var args = new string[]
@@ -101,7 +101,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotMapedCommand()
+        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotMappedCommand()
         {
             var invalidCommandName = "invalidCommandName";
 
@@ -142,9 +142,6 @@ namespace inausoft.netCLI.Tests
         public void Executor_RunCLI_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
             //Arrange
-            var invalidOptionName = "invalidOption";
-            var commandName = "command1";
-
             var args = new string[]
                             {
                                 "command1",

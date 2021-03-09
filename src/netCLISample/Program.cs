@@ -25,7 +25,7 @@ namespace netCLISample
 
             });
 
-            using( var provider = services.BuildServiceProvider())
+            using (ServiceProvider provider = services.BuildServiceProvider())
             {
                 logger = provider.GetRequiredService<ILogger<Program>>();
 
@@ -67,7 +67,7 @@ namespace netCLISample
     {
         public override int Run(MoveCommand options)
         {
-            Console.WriteLine("bla");
+            Console.WriteLine("Files were moved.");
             return 0;
         }
     }
