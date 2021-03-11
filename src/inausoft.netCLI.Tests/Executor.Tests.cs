@@ -14,8 +14,8 @@ namespace inausoft.netCLI.Tests
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
-            var args = new string[] 
-                            { 
+            var args = new string[]
+                            {
                                 "command1",
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
@@ -23,10 +23,10 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+            var mapping = new Mapping().Map<Command1>(mockCommandHandler);
 
             //Act
-            var result = Executor.RunCLI(config, args, mockCommandHandler);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
@@ -34,7 +34,7 @@ namespace inausoft.netCLI.Tests
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
             Assert.AreEqual(intOptionValue, mockCommandHandler.LastRunParameters.IntOption);
-            
+
         }
 
         [TestMethod]
@@ -53,14 +53,15 @@ namespace inausoft.netCLI.Tests
                             };
 
             var services = new ServiceCollection();
-            services.AddCLI(config => {
-                config.Map<Command1, MockCommand1Handler>();
+            services.ConfigureCLFlow(mapping =>
+            {
+                mapping.Map<Command1, MockCommand1Handler>();
             });
 
             var provider = services.BuildServiceProvider();
 
             //Act
-            var result = provider.RunCLI(args);
+            var result = CLFlow.Create().UseServiceProvider(provider).Run(args);
 
             //Assert
             var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
@@ -73,36 +74,34 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMaped()
+        public void Executor_RunCLI_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMapped()
         {
             //Arrange
             var args = new string[]
                             {
                                 "command1",
                                 "--boolOption", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mockCommand2Handler = new MockCommand2Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>()
-                                               .Map<Command2, MockCommand2Handler>();
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler)
+                                       .Map<Command2>(mockCommand2Handler);
 
             //Act
-            var result = Executor.RunCLI(config, args, mockCommand1Handler, mockCommand2Handler);
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
 
             Assert.IsNull(mockCommand2Handler.LastRunParameters);
-
-            Assert.IsTrue(mockCommand1Handler.LastRunParameters.BoolOption);
-            Assert.IsNull(mockCommand1Handler.LastRunParameters.NotOptionProperty);
-            Assert.IsNull(mockCommand1Handler.LastRunParameters.StringOption);
-            Assert.AreEqual(0, mockCommand1Handler.LastRunParameters.IntOption);
+            Assert.IsNotNull(mockCommand1Handler.LastRunParameters);
         }
 
         [TestMethod]
-        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotMapedCommand()
+        public void Executor_RunCLI_ShouldThrowInvalidCommmandException_ForNotMappedCommand()
         {
             var invalidCommandName = "invalidCommandName";
 
@@ -114,12 +113,13 @@ namespace inausoft.netCLI.Tests
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
-            //Act & Assert
-            var ex = Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
+            //Act
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
-            Assert.AreEqual(invalidCommandName, ex.CommandName);
+            //Assert
+            Assert.AreEqual((int)ErrorCode.UnrecognizedCommand, result);
         }
 
         [TestMethod]
@@ -129,33 +129,36 @@ namespace inausoft.netCLI.Tests
             var args = new string[] { };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
-            //Act & Assert
-            Assert.ThrowsException<InvalidCommandException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
+            //Act
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
+
+            //Assert
+            Assert.AreEqual((int)ErrorCode.UnspecifiedCommand, result);
         }
 
         [TestMethod]
         public void Executor_RunCLI_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
             //Arrange
-            var invalidOptionName = "invalidOption";
-            var commandName = "command1";
-
             var args = new string[]
                             {
-                                commandName,
-                                $"--{invalidOptionName}", "true",
+                                "command1",
+                                "--boolOption", "true",
+                                "--boolOptionXX", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
-            var config = new CLIConfiguration().Map<Command1, MockCommand1Handler>();
+            var mapping = new Mapping().Map<Command1>(mockCommand1Handler);
 
-            //Act & Assert
-            var ex = Assert.ThrowsException<InvalidOptionException>(() => Executor.RunCLI(config, args, mockCommand1Handler));
+            //Act
+            var result = CLFlow.Create().UseMapping(mapping).Run(args);
 
-            Assert.AreEqual(commandName, ex.CommandName);
-            Assert.AreEqual(invalidOptionName, ex.OptionName);
+            //Assert
+            Assert.AreEqual((int)ErrorCode.UnrecognizedOption, result);
         }
     }
 }

@@ -29,27 +29,24 @@ namespace netCLIConsoleApp
     {
         static int Main(string[] args)
         {
-            ICommandHandler[] handlers = new ICommandHandler[] {
-                new MoveCommandHandler()
-            };
+            var mapping = new CLIConfiguration().Map<MoveCommand>(new MoveCommandHandler());
 
-            var config = new CLIConfiguration().Map<MoveCommand, MoveCommandHandler>();
-
-            return Executor.RunCLI(config, args, handlers);
+            return CLFlow.Create().UseMapping(mapping)
+                                  .Run(args);
         }
     }
 
-    [Command("move", "Moves files from one path to another.")]
-    class MoveCommand
+    [Command("move", "Moves files between locations.")]
+    public class MoveCommand
     {
-        [Option("pathFrom", "Current files locations.")]
-        public string From { get; set; }
-
-        [Option("pathTo", "Destination path for the files.")]
-        public string To { get; set; }
-
-        [Option("force", "Overrides if files exists.")]
+        [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
+
+        [Option("from", "Current files locations.")]
+        public string PathFrom { get; set; }
+
+        [Option("to", "Destination path for the files.")]
+        public bool PathTo { get; set; }
     }
 
     class MoveCommandHandler : CommandHandler<MoveCommand>
@@ -69,32 +66,39 @@ namespace netCLIConsoleApp
 ## Using dependency injection:
 
 ```cs
-using inausoft.netCLI;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+...
 
 namespace ConsoleApp1
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             var services = new ServiceCollection();
-            services.AddCLI(config => {
-                config.Map<MoveCommand, MoveCommandHandler>();
+            services.ConfigureCLFlow(mapping =>
+            {
+                mapping.Map<MoveCommand, MoveCommandHandler>()
+                       .Map<HelpCommand, HelpCommandHandler>();
+
             });
 
-            var provider = services.BuildServiceProvider();
+            using (ServiceProvider provider = services.BuildServiceProvider())
+            {
+                logger = provider.GetRequiredService<ILogger<Program>>();
 
-            return provider.RunCLI(args);
+                return CLFlow.Create().UseServiceProvider(provider)
+                                      .UseFallback(ErrorHandling)
+                                      .Run(args);
+            }
         }
     }
 }
+...
 
 ```
 
 # Contributors
 
-- Iwanowski, Marcin
+- Iwanowski, Marcin (MarcinIN)
 - Kaczor, Mateusz (matiduck)
 - Marlewski, Jan (jmarlew)

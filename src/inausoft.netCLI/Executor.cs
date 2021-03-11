@@ -1,102 +1,139 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using inausoft.netCLI.Deserialization;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
 namespace inausoft.netCLI
 {
-    public static class Executor
+    public class CLFlow
     {
-        /// <summary>
-        /// Setups CLI flow by adding and configuring <see cref="RootCommandHandler"/>.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="SetupHelpCommand"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddCLI(this IServiceCollection services, Action<CLIConfiguration> setup)
+        private IServiceProvider _serviceProvider;
+
+        private Mapping _config;
+
+        private IOptionsDeserializer _deserializer;
+
+        private Action<ErrorCode> _fallbackFunc;
+
+        internal CLFlow()
+        {
+            _deserializer = new RegexOptionsDeserializer();
+            _fallbackFunc = (error) => { };
+        }
+
+        public CLFlow UseFallback(Action<ErrorCode> fallback)
+        {
+            _fallbackFunc = fallback ?? throw new ArgumentNullException(nameof(fallback));
+            return this;
+        }
+
+        public CLFlow UseMapping(Mapping mapping)
+        {
+            _config = mapping ?? throw new ArgumentNullException(nameof(mapping));
+            return this;
+        }
+
+        public CLFlow UseServiceProvider(IServiceProvider provider)
+        {
+            _serviceProvider = provider ?? throw new ArgumentOutOfRangeException(nameof(provider));
+            return this;
+        }
+
+        public CLFlow UseDeserializer(IOptionsDeserializer deserializer)
+        {
+            _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
+            return this;
+        }
+
+        public int Run(string[] args)
+        {
+            if (_config == null && _serviceProvider == null)
+            {
+                throw new InvalidOperationException($"{nameof(Mapping)} need to be provided either with {nameof(UseMapping)} method or via {nameof(IServiceProvider)}.");
+            }
+
+            var config = _config ?? _serviceProvider.GetService<Mapping>() ?? throw new InvalidOperationException();
+
+            if (!args.Any())
+            {
+                //TODO Add default handling here
+                return Fallback(ErrorCode.UnspecifiedCommand);
+            }
+
+            var mappingEntry = config.Entries.FirstOrDefault(it =>
+                 Attribute.IsDefined(it.CommandType, typeof(CommandAttribute)) &&
+                 (Attribute.GetCustomAttribute(it.CommandType, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
+
+            if (mappingEntry == null)
+            {
+                return Fallback(ErrorCode.UnrecognizedCommand);
+            }
+
+            object command;
+
+            try
+            {
+                command = _deserializer.Deserialize(mappingEntry.CommandType, args.Skip(1).ToArray());
+            }
+            catch (DeserializationException ex)
+            {
+                return Fallback(ex.ErrorCode);
+            }
+            catch (Exception)
+            {
+                return Fallback(ErrorCode.Unknown);
+            }
+
+
+            var handler = (mappingEntry.HandlerInstance ?? _serviceProvider.GetRequiredService(mappingEntry.HandlerType)) as ICommandHandler;
+
+            return handler.Run(command);
+        }
+
+        private int Fallback(ErrorCode errorCode)
+        {
+            _fallbackFunc(errorCode);
+
+            return (int)errorCode;
+        }
+
+        public static CLFlow Create()
+        {
+            return new CLFlow();
+        }
+    }
+
+    public static class ServiceCollectionExtentions
+    {
+        public static IServiceCollection ConfigureCLFlow(this IServiceCollection services, Action<Mapping> setup)
         {
             if (services == null)
             {
                 throw new ArgumentNullException($"{nameof(services)} cannot be null.");
             }
 
-            CLIConfiguration configuration = new CLIConfiguration();
-
-            setup(configuration);
-
-            services.AddSingleton(configuration);
-
-            configuration._commandMap.Values.ToList().ForEach(it =>
+            if (setup == null)
             {
-                services.AddSingleton(it);
+                throw new ArgumentNullException($"{nameof(setup)} cannot be null.");
+            }
+
+            Mapping mapping = new Mapping();
+            setup(mapping);
+            services.AddSingleton(mapping);
+
+            mapping.Entries.ToList().ForEach(it =>
+            {
+                if (it.HandlerInstance != null)
+                {
+                    services.AddSingleton(it.HandlerInstance);
+                }
+                else
+                {
+                    services.AddSingleton(it.HandlerType);
+                }
             });
 
             return services;
-        }
-
-        /// <summary>
-        /// Runs <see cref="ICommandHandler"/> for command specified in args./>
-        /// </summary>
-        /// <param name="serviceProvider"></param>
-        /// <param name="args">Application's command line arguments.</param>
-        /// <returns></returns>
-        public static int RunCLI(this IServiceProvider serviceProvider, string[] args)
-        {
-            var config = serviceProvider.GetService<CLIConfiguration>();
-
-            if (config == null)
-            {
-                throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
-            }
-
-            if (!args.Any())
-            {
-                //TODO Add default handling here
-                throw new InvalidCommandException($"Command was not specified.");
-            }
-
-            var commandType = config._commandMap.Keys.FirstOrDefault(it =>
-                Attribute.IsDefined(it, typeof(CommandAttribute)) &&
-                (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
-
-            if (commandType == null)
-            {
-                throw new InvalidCommandException(args[0], $"Command {args[0]} was not mapped.");
-            }
-
-            var command = config.Deserializer.Deserialize(commandType, args.Skip(1).ToArray());
-
-            var handler = serviceProvider.GetRequiredService(config._commandMap[command.GetType()]) as ICommandHandler;
-
-            return handler.Run(command);
-        }
-
-        public static int RunCLI(CLIConfiguration config, string[] args, params ICommandHandler[] handlers)
-        {
-            if (config == null)
-            {
-                throw new InvalidOperationException($"{nameof(CLIConfiguration)} was not registered. Run '{nameof(AddCLI)}' first.");
-            }
-
-            if (!args.Any())
-            {
-                //TODO Add default handling here
-                throw new InvalidCommandException($"Command was not specified.");
-            }
-
-            var commandType = config._commandMap.Keys.FirstOrDefault(it =>
-                Attribute.IsDefined(it, typeof(CommandAttribute)) &&
-                (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
-
-            if (commandType == null)
-            {
-                throw new InvalidCommandException(args[0], $"Command {args[0]} was not mapped.");
-            }
-
-            var command = config.Deserializer.Deserialize(commandType, args.Skip(1).ToArray());
-
-            var handler = handlers.First(it => it.GetType() == config._commandMap[command.GetType()]) as ICommandHandler;
-
-            return handler.Run(command);
         }
     }
 }

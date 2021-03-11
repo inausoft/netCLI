@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "netCLISample": {
+      "commandName": "Project",
+      "commandLineArgs": "help"
+    }
+  }
+}

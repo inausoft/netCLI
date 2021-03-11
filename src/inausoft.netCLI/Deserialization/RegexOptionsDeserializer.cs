@@ -10,7 +10,7 @@ namespace inausoft.netCLI.Deserialization
 
         private const string ValidationPattern = @"^(\s?--\S+(\s\w\S*)?)*$";
 
-        public T Deserialize<T>(string[] args) where T: class
+        public T Deserialize<T>(string[] args) where T : class
         {
             return Deserialize(typeof(T), args) as T;
         }
@@ -22,7 +22,7 @@ namespace inausoft.netCLI.Deserialization
 
         public object Deserialize(Type type, string optionsExpression)
         {
-            if(type == null)
+            if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -34,25 +34,32 @@ namespace inausoft.netCLI.Deserialization
 
             if (!ValidateOptionsExpression(optionsExpression))
             {
-                throw new FormatException($"{nameof(optionsExpression)} has invalid format.");
+                throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified option format : {OptionsPattern} is invalid.");
             }
 
             var command = Activator.CreateInstance(type);
 
             var options = new Regex(OptionsPattern).Matches(optionsExpression);
 
+            var properties = type.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
+
+            foreach (var optionType in properties.Select(it => Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute))
+            {
+                if (!optionType.IsOptional && !optionsExpression.Contains($"--{optionType.Name}"))
+                {
+                    throw new DeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
+                }
+            }
+
             foreach (Match option in options)
             {
                 var optionName = option.Groups[1].Value;
 
-                var property = type.GetProperties().FirstOrDefault(it => Attribute.IsDefined(it, typeof(OptionAttribute))
-                                                        && (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
+                var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
 
                 if (property == null)
                 {
-                    var commandName = (Attribute.GetCustomAttribute(type, typeof(CommandAttribute)) as CommandAttribute).Name;
-
-                    throw new InvalidOptionException(commandName, optionName);
+                    throw new DeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type {type} - no option : {optionName} was declared.");
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'

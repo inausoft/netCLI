@@ -15,6 +15,8 @@ namespace inausoft.netCLI
 
         public string HelpDescription { get; }
 
+        public bool IsOptional { get; set; }
+
         public OptionAttribute(string name, string helpDescription = "")
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));

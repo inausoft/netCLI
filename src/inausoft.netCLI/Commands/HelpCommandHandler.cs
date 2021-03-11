@@ -1,48 +1,43 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace inausoft.netCLI.Commands
 {
     /// <summary>
-    /// Deafult handler for 'help' command.
+    /// Default handler for 'help' command.
     /// </summary>
     public class HelpCommandHandler : CommandHandler<HelpCommand>
     {
-        private readonly CLIConfiguration _configuration;
+        private readonly Mapping _mapping;
 
         private readonly ILogger<HelpCommandHandler> _logger;
 
-        public HelpCommandHandler(CLIConfiguration configuration, ILogger<HelpCommandHandler> logger)
+        public HelpCommandHandler(Mapping mapping, ILogger<HelpCommandHandler> logger)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            _mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
 
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override int Run(HelpCommand command)
         {
-            if(command == null)
+            if (command == null)
             {
                 throw new ArgumentNullException(nameof(command));
             }
 
-            if (string.IsNullOrEmpty(command.SpecifiedCommandName))
+            if (string.IsNullOrWhiteSpace(command.SpecifiedCommandName))
             {
+                //List all available commands.
                 StringBuilder message = new StringBuilder();
                 message.AppendLine("Available commands:");
                 message.AppendLine();
 
-                foreach (var commandType in _configuration.CommandTypes)
+                foreach (var commandInfo in _mapping.CommandInfos)
                 {
-                    if (Attribute.IsDefined(commandType, typeof(CommandAttribute)))
-                    {
-                        CommandAttribute commadType = Attribute.GetCustomAttribute(commandType, typeof(CommandAttribute)) as CommandAttribute;
-
-                        message.AppendLine(string.Format("{0, -15} {1}", commadType.Name, commadType.HelpDescription));
-                    }
+                    message.AppendLine(string.Format(" {0, -15} {1}", commandInfo.Command.Name, commandInfo.Command.HelpDescription));
                 }
 
                 message.AppendLine();
@@ -52,28 +47,27 @@ namespace inausoft.netCLI.Commands
             }
             else
             {
-                var commandType = _configuration.CommandTypes.FirstOrDefault(it =>
-                    Attribute.IsDefined(it, typeof(CommandAttribute)) &&
-                    (Attribute.GetCustomAttribute(it, typeof(CommandAttribute)) as CommandAttribute).Name == command.SpecifiedCommandName);
+                //Display detailed help for one specified command.
+                var commandInfo = _mapping.CommandInfos.FirstOrDefault(it => it.Command.Name == command.SpecifiedCommandName);
 
-                if (commandType == null)
+                if (commandInfo == null)
                 {
-                    throw new InvalidCommandException(command.SpecifiedCommandName, $"Command {command.SpecifiedCommandName} is invalid.");
+                    _logger.LogInformation($"Command : {command.SpecifiedCommandName} is not recognized.");
+                    return 1;
                 }
 
-                StringBuilder message = new StringBuilder($"Usage: {command.SpecifiedCommandName}");
+                StringBuilder message = new StringBuilder();
+                message.AppendLine($"{command.SpecifiedCommandName} - {commandInfo.Command.HelpDescription}");
+                message.Append($"Usage: {command.SpecifiedCommandName}");
 
-                var properties = commandType.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
-
-                if(properties.Any())
+                if (commandInfo.Options.Any())
                 {
                     message.AppendLine(" [OPTIONS]");
                     message.AppendLine();
                     message.AppendLine("options:");
 
-                    foreach (var property in properties)
+                    foreach (var option in commandInfo.Options)
                     {
-                        var option = (Attribute.GetCustomAttribute(property, typeof(OptionAttribute)) as OptionAttribute);
                         message.AppendLine(string.Format("--{0, -15} {1}", option.Name, option.HelpDescription));
                     }
                 }
@@ -81,7 +75,7 @@ namespace inausoft.netCLI.Commands
                 message.AppendLine();
                 _logger.LogInformation(message.ToString());
             }
-            
+
             return 0;
         }
     }
