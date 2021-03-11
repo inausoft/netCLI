@@ -65,7 +65,14 @@ namespace inausoft.netCLI.Deserialization
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
                 if (string.IsNullOrEmpty(option.Groups[2].Value))
                 {
-                    property.SetMethod.Invoke(command, new object[] { true });
+                    if (property.PropertyType == typeof(bool))
+                    {
+                        property.SetMethod.Invoke(command, new object[] { true });
+                    }
+                    else
+                    {
+                        throw new DeserializationException(ErrorCode.OptionValueMissing, $"No value was specified for option : {optionName}.");
+                    }
                 }
                 else
                 {

@@ -39,6 +39,9 @@ namespace netCLISample
         {
             switch (errorCode)
             {
+                case ErrorCode.OptionValueMissing:
+                    logger.LogError("Could not execute command. Value was not specified for one of the options.");
+                    break;
                 case ErrorCode.RequiredOptionMissing:
                     logger.LogError("Could not execute command. Some required options were missing.");
                     break;
@@ -60,7 +63,7 @@ namespace netCLISample
         public string PathFrom { get; set; }
 
         [Option("to", "Destination path for the files.")]
-        public bool PathTo { get; set; }
+        public string PathTo { get; set; }
     }
 
     public class MoveCommandHandler : CommandHandler<MoveCommand>

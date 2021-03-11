@@ -93,6 +93,26 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
+        public void RegexOptionsDeserializer_Deserialize_ThrowsDeserializationException_WhenNoValueWasSpecifiedForNotBooleanProperty()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "--stringOption",
+                                "--boolOption", "true",
+                                "--intOption", "1"
+                            };
+
+            var deserializer = new RegexOptionsDeserializer();
+
+            //Act
+            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.OptionValueMissing, exception.ErrorCode);
+        }
+
+        [TestMethod]
         public void RegexArgumentHandler_ThrowsDeserializationException_WhenNotAllRequiredOptionsWereSupplied()
         {
             //Arrange
