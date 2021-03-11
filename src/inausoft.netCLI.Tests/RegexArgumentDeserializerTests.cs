@@ -36,7 +36,8 @@ namespace inausoft.netCLI.Tests
 
         [TestMethod]
         [DataRow("s")]
-        [DataRow(@"C:\Program%Files")]
+        [DataRow(@"C:\ProgramFiles")]
+        [DataRow(@"C:\Program Files")]
         public void RegexArgumentHandler_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
             //Arrange
@@ -59,7 +60,6 @@ namespace inausoft.netCLI.Tests
         public void RegexArgumentHandler_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
         {
             //Arrange
-
             var args = new string[] { };
 
             var deserializer = new RegexOptionsDeserializer();
@@ -115,15 +115,15 @@ namespace inausoft.netCLI.Tests
         [DataRow("random_string_with_no_options")]
         [DataRow("command --option optionvalue")]
         [DataRow("--optionX optionXvalue --optionY optionYvalue random_string_at_the_end")]
+        [DataRow("--optionX \"some not enclosed string value")]
+        [DataRow("--optionX some not enclosed string value\"")]
         public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string optionsExpression)
         {
             //Arrange
-            var args = new string[] { optionsExpression };
-
             var deserializer = new RegexOptionsDeserializer();
 
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize(typeof(Command1), optionsExpression));
 
             //Assert
             Assert.AreEqual(ErrorCode.InvalidOptionsFormat, exception.ErrorCode);

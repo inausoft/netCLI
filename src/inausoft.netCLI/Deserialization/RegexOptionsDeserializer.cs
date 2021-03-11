@@ -6,9 +6,9 @@ namespace inausoft.netCLI.Deserialization
 {
     public class RegexOptionsDeserializer : IOptionsDeserializer
     {
-        private const string OptionsPattern = @"--(\S+)\s?(\w\S*)*";
+        private const string OptionsPattern = "--(\\S+)\\s?((\\w\\S*)|(\".*\"))?";
 
-        private const string ValidationPattern = @"^(\s?--\S+(\s\w\S*)?)*$";
+        private const string ValidationPattern = "^(\\s?--\\S+(\\s(\\S*|\"[^\"]*\"))?)*$";
 
         public T Deserialize<T>(string[] args) where T : class
         {
@@ -17,6 +17,14 @@ namespace inausoft.netCLI.Deserialization
 
         public object Deserialize(Type type, string[] args)
         {
+            for(int i = 0; i < args.Length; i++)
+            {
+                if(args[i].Contains(" "))
+                {
+                    args[i] = $"\"{args[i]}\"";
+                }
+            }
+
             return Deserialize(type, string.Join(" ", args));
         }
 
@@ -69,7 +77,7 @@ namespace inausoft.netCLI.Deserialization
                 }
                 else
                 {
-                    property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Groups[2].Value, property.PropertyType) });
+                    property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Groups[2].Value.Replace("\"", ""), property.PropertyType) });
                 }
             }
 
