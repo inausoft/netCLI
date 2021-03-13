@@ -10,5 +10,6 @@
         UnrecognizedOption = 21,
         InvalidOptionsFormat = 22,
         RequiredOptionMissing = 23,
+        OptionValueMissing = 24,
     }
 }

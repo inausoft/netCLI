@@ -35,7 +35,7 @@ namespace inausoft.netCLI.Commands
                 message.AppendLine("Available commands:");
                 message.AppendLine();
 
-                foreach (var commandInfo in _mapping.CommandInfos)
+                foreach (var commandInfo in _mapping.CommandInfos.OrderBy(it => it.Command.Name))
                 {
                     message.AppendLine(string.Format(" {0, -15} {1}", commandInfo.Command.Name, commandInfo.Command.HelpDescription));
                 }
@@ -66,9 +66,9 @@ namespace inausoft.netCLI.Commands
                     message.AppendLine();
                     message.AppendLine("options:");
 
-                    foreach (var option in commandInfo.Options)
+                    foreach (var option in commandInfo.Options.OrderBy(it => it.Name))
                     {
-                        message.AppendLine(string.Format("--{0, -15} {1}", option.Name, option.HelpDescription));
+                        message.AppendLine(string.Format("--{0, -15} {1} {2}", option.Name, option.HelpDescription, RenderOptional(option.IsOptional)));
                     }
                 }
 
@@ -77,6 +77,18 @@ namespace inausoft.netCLI.Commands
             }
 
             return 0;
+        }
+
+        private string RenderOptional(bool IsOptional)
+        {
+            if (IsOptional)
+            {
+                return "[OPTIONAL]";
+            }
+            else
+            {
+                return "";
+            }
         }
     }
 }

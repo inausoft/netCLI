@@ -79,7 +79,7 @@ namespace inausoft.netCLI
             {
                 return Fallback(ex.ErrorCode);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Fallback(ErrorCode.Unknown);
             }
