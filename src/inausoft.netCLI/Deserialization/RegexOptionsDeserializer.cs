@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
+    [Obsolete("RegexOptionDeserializer is obsolete. Use LogicOptionsDeserializer instead.")]
     public class RegexOptionsDeserializer : IOptionsDeserializer
     {
         private const string OptionsPattern = "--(\\S+)\\s?((\\w\\S*)|(\".*\"))?";
