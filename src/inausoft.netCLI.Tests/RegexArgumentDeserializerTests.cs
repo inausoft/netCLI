@@ -13,7 +13,7 @@ namespace inausoft.netCLI.Tests
         public RegexArgumentDeserializerTests()
         {
             //Deserializer = new RegexOptionsDeserializer();
-            Deserializer = new LogicOptionsDeserializer();
+            Deserializer = new LogicalOptionsDeserializer();
         }
 
         [TestMethod]

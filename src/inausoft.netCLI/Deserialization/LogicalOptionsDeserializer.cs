@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
-    public class LogicOptionsDeserializer : IOptionsDeserializer
+    public class LogicalOptionsDeserializer : IOptionsDeserializer
     {
         public T Deserialize<T>(string[] args) where T : class
         {
