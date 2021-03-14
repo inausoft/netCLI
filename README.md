@@ -97,8 +97,10 @@ namespace ConsoleApp1
 
 ```
 
-# Contributors
-
+# Contributing
+## Full list of our contributors (in order of making first contribution):
 - Iwanowski, Marcin (MarcinIN)
 - Kaczor, Mateusz (matiduck)
 - Marlewski, Jan (jmarlew)
+
+If you like to join or contribute please see our [Contributing guidelines](CONTRIBUTING.md)
