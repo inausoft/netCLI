@@ -14,6 +14,6 @@ Working on the X.Py.API
 ## Reporting bug
 If you have spotted a bug or mistake in our documentation - please raise an issue using existing `bug_report.md` and try to fill in as many details as possible.
 
-## Sharing an idead
+## Sharing an idea
 If you want to share an idea, insight or improvement use Github Discussions so that we can gather brother feedback before we will create backlog 
 for the next release.
