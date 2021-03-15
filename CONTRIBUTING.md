@@ -13,3 +13,7 @@ Be sure to add following sections:
 ## Testing
 
 There a small set of unit tests available - so be sure to run / adjust / add them before you will create your pull request.
+
+## Working with code
+
+We're using [simple branching](http://inausoft.com/blog/simple-branching) when it comes to branching, merging and versioning.
