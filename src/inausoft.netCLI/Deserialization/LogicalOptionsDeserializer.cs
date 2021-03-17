@@ -1,16 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
-    [Obsolete("RegexOptionDeserializer is obsolete. Use LogicOptionsDeserializer instead.")]
-    public class RegexOptionsDeserializer : IOptionsDeserializer
+    public class LogicalOptionsDeserializer : IOptionsDeserializer
     {
-        private const string OptionsPattern = "--(\\S+)\\s?((\\w\\S*)|(\".*\"))?";
-
-        private const string ValidationPattern = "^(\\s?--\\S+(\\s(\\S*|\"[^\"]*\"))?)*$";
-
         public T Deserialize<T>(string[] args) where T : class
         {
             return Deserialize(typeof(T), args) as T;
@@ -18,51 +14,52 @@ namespace inausoft.netCLI.Deserialization
 
         public object Deserialize(Type type, string[] args)
         {
-            for(int i = 0; i < args.Length; i++)
-            {
-                if(args[i].Contains(" "))
-                {
-                    args[i] = $"\"{args[i]}\"";
-                }
-            }
-
-            return Deserialize(type, string.Join(" ", args));
-        }
-
-        public object Deserialize(Type type, string optionsExpression)
-        {
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            if (optionsExpression == null)
+            if (args == null)
             {
-                throw new ArgumentNullException(nameof(optionsExpression));
+                throw new ArgumentNullException(nameof(args));
             }
 
-            if (!ValidateOptionsExpression(optionsExpression))
+            Dictionary<string, string> options = new Dictionary<string, string>();
+
+            foreach(var arg in args)
             {
-                throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified option format : {OptionsPattern} is invalid.");
+                if (arg.Contains('-'))
+                {
+                    options.Add(arg.Replace("-", ""), null);
+                }
+                else
+                {
+                    var key = options.LastOrDefault(it => it.Value == null).Key;
+
+                    if(key == null)
+                    {
+                        throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified args are invalid.");
+                    }
+
+                    options[key] = arg;
+                }
             }
 
             var command = Activator.CreateInstance(type);
-
-            var options = new Regex(OptionsPattern).Matches(optionsExpression);
 
             var properties = type.GetProperties().Where(it => Attribute.IsDefined(it, typeof(OptionAttribute)));
 
             foreach (var optionType in properties.Select(it => Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute))
             {
-                if (!optionType.IsOptional && !optionsExpression.Contains($"--{optionType.Name}"))
+                if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name))
                 {
                     throw new DeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
                 }
             }
 
-            foreach (Match option in options)
+            foreach (var option in options)
             {
-                var optionName = option.Groups[1].Value;
+                var optionName = option.Key;
 
                 var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
 
@@ -72,7 +69,7 @@ namespace inausoft.netCLI.Deserialization
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
-                if (string.IsNullOrEmpty(option.Groups[2].Value))
+                if (string.IsNullOrEmpty(option.Value))
                 {
                     if (property.PropertyType == typeof(bool))
                     {
@@ -85,16 +82,11 @@ namespace inausoft.netCLI.Deserialization
                 }
                 else
                 {
-                    property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Groups[2].Value.Replace("\"", ""), property.PropertyType) });
+                    property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Value, property.PropertyType) });
                 }
             }
 
             return command;
-        }
-
-        private bool ValidateOptionsExpression(string optionsExpression)
-        {
-            return new Regex(ValidationPattern).IsMatch(optionsExpression);
         }
     }
 }

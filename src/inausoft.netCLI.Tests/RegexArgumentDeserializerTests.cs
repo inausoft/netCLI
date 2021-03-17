@@ -8,6 +8,14 @@ namespace inausoft.netCLI.Tests
     [TestClass]
     public class RegexArgumentDeserializerTests
     {
+        IOptionsDeserializer Deserializer { get; }
+
+        public RegexArgumentDeserializerTests()
+        {
+            //Deserializer = new RegexOptionsDeserializer();
+            Deserializer = new LogicalOptionsDeserializer();
+        }
+
         [TestMethod]
         public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions()
         {
@@ -22,10 +30,8 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", intOptionValue.ToString()
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var command = deserializer.Deserialize<Command1>(args);
+            var command = Deserializer.Deserialize<Command1>(args);
 
             //Assert
             Assert.IsTrue(command.BoolOption);
@@ -36,7 +42,8 @@ namespace inausoft.netCLI.Tests
 
         [TestMethod]
         [DataRow("s")]
-        [DataRow(@"C:\Program%Files")]
+        [DataRow(@"C:\ProgramFiles")]
+        [DataRow(@"C:\Program Files")]
         public void RegexArgumentHandler_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
             //Arrange
@@ -46,10 +53,8 @@ namespace inausoft.netCLI.Tests
                                 "--stringOption", stringOptionValue
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var command = deserializer.Deserialize<Command2>(args);
+            var command = Deserializer.Deserialize<Command2>(args);
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
@@ -59,13 +64,10 @@ namespace inausoft.netCLI.Tests
         public void RegexArgumentHandler_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
         {
             //Arrange
-
             var args = new string[] { };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var command = deserializer.Deserialize<Command2>(args);
+            var command = Deserializer.Deserialize<Command2>(args);
 
             //Assert
             Assert.AreEqual(Command2.SomeDefaultValue, command.StringOption);
@@ -83,10 +85,8 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", "1"
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
@@ -103,10 +103,8 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", "1"
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.OptionValueMissing, exception.ErrorCode);
@@ -122,28 +120,21 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", "1"
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
         }
 
         [TestMethod]
-        [DataRow("random_string_with_no_options")]
-        [DataRow("command --option optionvalue")]
-        [DataRow("--optionX optionXvalue --optionY optionYvalue random_string_at_the_end")]
-        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string optionsExpression)
+        [DataRow(new string[] { "random_string_with_no_options" })]
+        [DataRow(new string[] { "command", "--option", "optionvalue" })]
+        [DataRow(new string[] { "--optionX", "optionXvalue", "--optionY", "optionYvalue", "random_string_at_the_end" })]
+        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
         {
-            //Arrange
-            var args = new string[] { optionsExpression };
-
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.InvalidOptionsFormat, exception.ErrorCode);

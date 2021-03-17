@@ -17,7 +17,7 @@ namespace inausoft.netCLI
 
         internal CLFlow()
         {
-            _deserializer = new RegexOptionsDeserializer();
+            _deserializer = new LogicalOptionsDeserializer();
             _fallbackFunc = (error) => { };
         }
 
