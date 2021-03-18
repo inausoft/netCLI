@@ -22,16 +22,36 @@ namespace inausoft.netCLI
 
     public class Mapping
     {
-        internal List<MappingEntry> Entries { get; set; }
+        private List<MappingEntry> _entries { get; set; }
+
+        internal MappingEntry DefaultEntry { get; set; }
+
+        internal IEnumerable<MappingEntry> Entries
+        {
+            get
+            {
+                var entries = new List<MappingEntry>(_entries);
+                if(DefaultEntry != null)
+                {
+                    entries.Add(DefaultEntry);
+                }
+                return entries;
+            }
+        }
 
         public Mapping()
         {
-            Entries = new List<MappingEntry>();
+            _entries = new List<MappingEntry>();
         }
 
         public Mapping Map<TCommand, THandler>() where TCommand : class where THandler : CommandHandler<TCommand>
         {
-            Entries.Add(new MappingEntry()
+            if(Entries.Any(it => it.CommandType == typeof(TCommand)))
+            {
+                throw new InvalidOperationException($"'{typeof(TCommand)}' was already mapped.");
+            }
+
+            _entries.Add(new MappingEntry()
             {
                 CommandType = typeof(TCommand),
                 HandlerType = typeof(THandler),
@@ -40,14 +60,62 @@ namespace inausoft.netCLI
             return this;
         }
 
+        public Mapping MapDefault<TCommand, THandler>() where TCommand : class where THandler : CommandHandler<TCommand>
+        {
+            if (DefaultEntry != null)
+            {
+                throw new InvalidOperationException("Default command was already mapped.");
+            }
+
+            if (Entries.Any(it => it.CommandType == typeof(TCommand)))
+            {
+                throw new InvalidOperationException($"'{typeof(TCommand)}' was already mapped.");
+            }
+
+            DefaultEntry = new MappingEntry()
+            {
+                CommandType = typeof(TCommand),
+                HandlerType = typeof(THandler),
+            };
+
+            return this;
+        }
+
         public Mapping Map<TCommand>(CommandHandler<TCommand> implementation) where TCommand : class
         {
-            Entries.Add(new MappingEntry()
+            if (Entries.Any(it => it.CommandType == typeof(TCommand)))
+            {
+                throw new InvalidOperationException($"'{typeof(TCommand)}' was already mapped.");
+            }
+
+            _entries.Add(new MappingEntry()
             {
                 CommandType = typeof(TCommand),
                 HandlerType = implementation.GetType(),
                 HandlerInstance = implementation
             });
+
+            return this;
+        }
+
+        public Mapping MapDefault<TCommand>(CommandHandler<TCommand> implementation) where TCommand : class
+        {
+            if (DefaultEntry != null)
+            {
+                throw new InvalidOperationException("Default command was already mapped.");
+            }
+
+            if (Entries.Any(it => it.CommandType == typeof(TCommand)))
+            {
+                throw new InvalidOperationException($"'{typeof(TCommand)}' was already mapped.");
+            }
+
+            DefaultEntry = new MappingEntry()
+            {
+                CommandType = typeof(TCommand),
+                HandlerType = implementation.GetType(),
+                HandlerInstance = implementation
+            };
 
             return this;
         }

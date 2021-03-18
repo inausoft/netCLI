@@ -54,15 +54,25 @@ namespace inausoft.netCLI
 
             var config = _config ?? _serviceProvider.GetService<Mapping>() ?? throw new InvalidOperationException();
 
-            if (!args.Any())
-            {
-                //TODO Add default handling here
-                return Fallback(ErrorCode.UnspecifiedCommand);
-            }
+            MappingEntry mappingEntry;
 
-            var mappingEntry = config.Entries.FirstOrDefault(it =>
+            if (args.Any() && !args[0].Contains("-"))
+            {
+                mappingEntry = config.Entries.FirstOrDefault(it =>
                  Attribute.IsDefined(it.CommandType, typeof(CommandAttribute)) &&
                  (Attribute.GetCustomAttribute(it.CommandType, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
+
+                args = args.Skip(1).ToArray();
+            }
+            else
+            {
+                if (config.DefaultEntry == null)
+                {
+                    return Fallback(ErrorCode.UnspecifiedCommand);
+                }
+
+                mappingEntry = config.DefaultEntry;
+            }
 
             if (mappingEntry == null)
             {
@@ -73,7 +83,7 @@ namespace inausoft.netCLI
 
             try
             {
-                command = _deserializer.Deserialize(mappingEntry.CommandType, args.Skip(1).ToArray());
+                command = _deserializer.Deserialize(mappingEntry.CommandType, args.ToArray());
             }
             catch (DeserializationException ex)
             {
@@ -83,7 +93,6 @@ namespace inausoft.netCLI
             {
                 return Fallback(ErrorCode.Unknown);
             }
-
 
             var handler = (mappingEntry.HandlerInstance ?? _serviceProvider.GetRequiredService(mappingEntry.HandlerType)) as ICommandHandler;
 
@@ -132,7 +141,7 @@ namespace inausoft.netCLI
                     services.AddSingleton(it.HandlerType);
                 }
             });
-
+            
             return services;
         }
     }
