@@ -4,9 +4,9 @@
         <name>inausoft.netCLI</name>
     </assembly>
     <members>
-        <member name="M:inausoft.netCLI.CLIFlow.UseMapping(inausoft.netCLI.CommandMapping)">
+        <member name="M:inausoft.netCLI.CLIFlow.UseMapping(CommandMapping)">
             <summary>
-            Instructs to explicitly use specified <see cref="T:inausoft.netCLI.CommandMapping"/>.
+            Instructs to explicitly use specified <see cref="T:CommandMapping"/>.
             </summary>
             <param name="mapping"></param>
             <returns></returns>
@@ -64,9 +64,9 @@
             Default handler for <see cref="T:inausoft.netCLI.Commands.HelpCommand"/>, that prints information about mapped commands.
             </summary>
         </member>
-        <member name="M:inausoft.netCLI.Commands.HelpCommandHandler.#ctor(inausoft.netCLI.CommandMapping,Microsoft.Extensions.Logging.ILogger{inausoft.netCLI.Commands.HelpCommandHandler})">
+        <member name="M:inausoft.netCLI.Commands.HelpCommandHandler.#ctor(CommandMapping,Microsoft.Extensions.Logging.ILogger{inausoft.netCLI.Commands.HelpCommandHandler})">
             <summary>
-            Initializes new instance of <see cref="T:inausoft.netCLI.Commands.HelpCommandHandler"/> with the specified <see cref="T:inausoft.netCLI.CommandMapping"/>.
+            Initializes new instance of <see cref="T:inausoft.netCLI.Commands.HelpCommandHandler"/> with the specified <see cref="T:CommandMapping"/>.
             </summary>
             <param name="mapping"></param>
             <param name="logger"></param>
@@ -157,6 +157,48 @@
             </summary>
             <param name="name"></param>
             <param name="helpDescription"></param>
+        </member>
+        <member name="T:CommandMapping">
+            <summary>
+            Represents sets of mappings between commands and related command handlers.
+            </summary>
+        </member>
+        <member name="M:CommandMapping.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:CommandMapping"/>.
+            </summary>
+        </member>
+        <member name="M:CommandMapping.Map``2">
+            <summary>
+            Maps specified command with supplied <see cref="T:inausoft.netCLI.ICommandHandler"/>.
+            </summary>
+            <typeparam name="TCommand"></typeparam>
+            <typeparam name="THandler"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:CommandMapping.MapDefault``2">
+            <summary>
+            Maps specified command with supplied <see cref="T:inausoft.netCLI.ICommandHandler"/>.
+            </summary>
+            <typeparam name="TCommand"></typeparam>
+            <typeparam name="THandler"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:CommandMapping.Map``1(inausoft.netCLI.CommandHandler{``0})">
+            <summary>
+            Maps specified command with supplied <see cref="T:inausoft.netCLI.ICommandHandler"/> instance.
+            </summary>
+            <typeparam name="TCommand"></typeparam>
+            <typeparam name="THandler"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:CommandMapping.MapDefault``1(inausoft.netCLI.CommandHandler{``0})">
+            <summary>
+            Maps specified command with supplied <see cref="T:inausoft.netCLI.ICommandHandler"/> instance.
+            </summary>
+            <typeparam name="TCommand"></typeparam>
+            <typeparam name="THandler"></typeparam>
+            <returns></returns>
         </member>
     </members>
 </doc>
