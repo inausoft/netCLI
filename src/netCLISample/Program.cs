@@ -21,7 +21,7 @@ namespace netCLISample
             services.ConfigureCLFlow(mapping =>
             {
                 mapping.Map<MoveCommand, MoveCommandHandler>()
-                      .Map<HelpCommand, HelpCommandHandler>();
+                       .MapDefault<HelpCommand, HelpCommandHandler>();
 
             });
 
