@@ -8,12 +8,11 @@ namespace inausoft.netCLI.Tests
     [TestClass]
     public class RegexArgumentDeserializerTests
     {
-        IOptionsDeserializer Deserializer { get; }
+        ICommandDeserializer Deserializer { get; }
 
         public RegexArgumentDeserializerTests()
         {
-            //Deserializer = new RegexOptionsDeserializer();
-            Deserializer = new LogicalOptionsDeserializer();
+            Deserializer = new LogicalCommandDeserializer();
         }
 
         [TestMethod]
@@ -86,7 +85,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
@@ -104,7 +103,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.OptionValueMissing, exception.ErrorCode);
@@ -121,7 +120,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
@@ -134,7 +133,7 @@ namespace inausoft.netCLI.Tests
         public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
         {
             //Act
-            var exception = Assert.ThrowsException<DeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.InvalidOptionsFormat, exception.ErrorCode);

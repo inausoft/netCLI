@@ -2,11 +2,11 @@
 
 namespace inausoft.netCLI.Deserialization
 {
-    public class DeserializationException : Exception
+    public class CommandDeserializationException : Exception
     {
         public ErrorCode ErrorCode { get; }
 
-        public DeserializationException(ErrorCode errorCode, string message = null) : base(message)
+        public CommandDeserializationException(ErrorCode errorCode, string message = null) : base(message)
         {
             ErrorCode = errorCode;
         }

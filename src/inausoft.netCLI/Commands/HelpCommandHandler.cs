@@ -6,15 +6,20 @@ using System.Text;
 namespace inausoft.netCLI.Commands
 {
     /// <summary>
-    /// Default handler for 'help' command.
+    /// Default handler for <see cref="HelpCommand"/>, that prints information about mapped commands.
     /// </summary>
     public class HelpCommandHandler : CommandHandler<HelpCommand>
     {
-        private readonly Mapping _mapping;
+        private readonly CommandMapping _mapping;
 
         private readonly ILogger<HelpCommandHandler> _logger;
 
-        public HelpCommandHandler(Mapping mapping, ILogger<HelpCommandHandler> logger)
+        /// <summary>
+        /// Initializes new instance of <see cref="HelpCommandHandler"/> with the specified <see cref="CommandMapping"/>.
+        /// </summary>
+        /// <param name="mapping"></param>
+        /// <param name="logger"></param>
+        public HelpCommandHandler(CommandMapping mapping, ILogger<HelpCommandHandler> logger)
         {
             _mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
 

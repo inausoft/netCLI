@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>inausoft.netCLI</name>
+    </assembly>
+    <members>
+        <member name="M:inausoft.netCLI.CLIFlow.UseMapping(inausoft.netCLI.CommandMapping)">
+            <summary>
+            Instructs to explicitly use specified <see cref="T:inausoft.netCLI.CommandMapping"/>.
+            </summary>
+            <param name="mapping"></param>
+            <returns></returns>
+        </member>
+        <member name="M:inausoft.netCLI.CLIFlow.UseServiceProvider(System.IServiceProvider)">
+            <summary>
+            Instructs to use <see cref="T:System.IServiceProvider"/> to create instances of mapped <see cref="T:inausoft.netCLI.ICommandHandler"/>.
+            </summary>
+            <param name="provider"></param>
+            <returns></returns>
+        </member>
+        <member name="M:inausoft.netCLI.CLIFlow.UseDeserializer(inausoft.netCLI.Deserialization.ICommandDeserializer)">
+            <summary>
+            Instructs to use supplied <see cref="T:inausoft.netCLI.Deserialization.ICommandDeserializer"/> instead of default implementation for the purpose of deserializing command arguments.
+            </summary>
+            <param name="deserializer"></param>
+            <returns></returns>
+        </member>
+        <member name="M:inausoft.netCLI.CLIFlow.Run(System.String[])">
+            <summary>
+            Deserializes supplied arguments into command and runs mapped <see cref="T:inausoft.netCLI.ICommandHandler"/>.
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="T:inausoft.netCLI.CommandAttribute">
+            <summary>
+            Marks class as a verb command. Related properties should be mark using <see cref="T:inausoft.netCLI.OptionAttribute"/>.
+            </summary>
+        </member>
+        <member name="P:inausoft.netCLI.CommandAttribute.Name">
+            <summary>
+            Gets the name of the command.
+            </summary>
+        </member>
+        <member name="P:inausoft.netCLI.CommandAttribute.HelpDescription">
+            <summary>
+            Gets the description of the command.
+            </summary>
+        </member>
+        <member name="M:inausoft.netCLI.CommandAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:inausoft.netCLI.CommandAttribute"/> with specified name and description.
+            </summary>
+            <param name="name"></param>
+            <param name="helpDescription"></param>
+        </member>
+        <member name="T:inausoft.netCLI.Commands.HelpCommand">
+            <summary>
+            Default help command.
+            </summary>
+        </member>
+        <member name="T:inausoft.netCLI.Commands.HelpCommandHandler">
+            <summary>
+            Default handler for <see cref="T:inausoft.netCLI.Commands.HelpCommand"/>, that prints information about mapped commands.
+            </summary>
+        </member>
+        <member name="M:inausoft.netCLI.Commands.HelpCommandHandler.#ctor(inausoft.netCLI.CommandMapping,Microsoft.Extensions.Logging.ILogger{inausoft.netCLI.Commands.HelpCommandHandler})">
+            <summary>
+            Initializes new instance of <see cref="T:inausoft.netCLI.Commands.HelpCommandHandler"/> with the specified <see cref="T:inausoft.netCLI.CommandMapping"/>.
+            </summary>
+            <param name="mapping"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:inausoft.netCLI.Deserialization.ICommandDeserializer.Deserialize(System.Type,System.String[])">
+            <summary>
+            Deserializes array of args into specified <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type"></param>
+            <param name="args"></param>
+            <returns>An instance of specified <see cref="T:System.Type"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:inausoft.netCLI.Deserialization.CommandDeserializationException"/>
+        </member>
+        <member name="M:inausoft.netCLI.Deserialization.ICommandDeserializer.Deserialize``1(System.String[])">
+            <summary>
+            Deserializes array of args into specified <see cref="T:System.Type"/>.
+            </summary>
+            <param name="type"></param>
+            <param name="args"></param>
+            <returns>An instance of specified <see cref="T:System.Type"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:inausoft.netCLI.Deserialization.CommandDeserializationException"/>
+        </member>
+        <member name="M:inausoft.netCLI.Deserialization.LogicalCommandDeserializer.Deserialize``1(System.String[])">
+            <summary>
+            Deserializes array of args into specified <see cref="T:System.Type"/>
+            </summary>
+            <param name="type"></param>
+            <param name="args"></param>
+            <returns>An instance of specified <see cref="T:System.Type"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:inausoft.netCLI.Deserialization.CommandDeserializationException"/>
+        </member>
+        <member name="M:inausoft.netCLI.Deserialization.LogicalCommandDeserializer.Deserialize(System.Type,System.String[])">
+            <summary>
+            Deserializes array of args into specified <see cref="T:System.Type"/>
+            </summary>
+            <param name="type"></param>
+            <param name="args"></param>
+            <returns>An instance of specified <see cref="T:System.Type"/></returns>
+            <exception cref="T:System.ArgumentNullException"/>
+            <exception cref="T:inausoft.netCLI.Deserialization.CommandDeserializationException"/>
+        </member>
+        <member name="F:inausoft.netCLI.ErrorCode.Unknown">
+            <summary>
+            Unknown error.
+            </summary>
+        </member>
+        <member name="F:inausoft.netCLI.ErrorCode.UnspecifiedCommand">
+            <summary>
+            No command name was specified, and no default command was mapped.
+            </summary>
+        </member>
+        <member name="F:inausoft.netCLI.ErrorCode.UnrecognizedCommand">
+            <summary>
+            Supplied command was not mapped.
+            </summary>
+        </member>
+        <member name="F:inausoft.netCLI.ErrorCode.RequiredOptionMissing">
+            <summary>
+            At least one of required option was missing.
+            </summary>
+        </member>
+        <member name="T:inausoft.netCLI.OptionAttribute">
+            <summary>
+            Marks property as an option of a verb command. Class should be marked using <see cref="T:inausoft.netCLI.CommandAttribute"/>.
+            </summary>
+        </member>
+        <member name="P:inausoft.netCLI.OptionAttribute.Name">
+            <summary>
+            Gets the name of the option.
+            </summary>
+        </member>
+        <member name="P:inausoft.netCLI.OptionAttribute.HelpDescription">
+            <summary>
+            Gets the description of the option.
+            </summary>
+        </member>
+        <member name="P:inausoft.netCLI.OptionAttribute.IsOptional">
+            <summary>
+            Gets or sets a value indicating whether specified option is optional or required.
+            </summary>
+        </member>
+        <member name="M:inausoft.netCLI.OptionAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:inausoft.netCLI.OptionAttribute"/> with specified name and description.
+            </summary>
+            <param name="name"></param>
+            <param name="helpDescription"></param>
+        </member>
+    </members>
+</doc>

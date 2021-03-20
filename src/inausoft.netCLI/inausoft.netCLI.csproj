@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Iwanowski Marcin, Kaczor Mateusz, Marlewski Jan</Authors>
+    <Authors>Iwanowski Marcin, Kaczor Mateusz, Marlewski Jan, Huderek Damian</Authors>
     <PackageProjectUrl>https://github.com/inausoft/netCLI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inausoft/netCLI</RepositoryUrl>
     <PackageTags>CLI command line parsing</PackageTags>
@@ -17,6 +17,16 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Company>inausoft &amp; contributors</Company>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>2021 inausoft</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\WorkSpaces\inausoft\netCLI\src\inausoft.netCLI\inausoft.netCLI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\WorkSpaces\inausoft\netCLI\src\inausoft.netCLI\inausoft.netCLI.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

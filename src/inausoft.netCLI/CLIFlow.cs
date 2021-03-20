@@ -5,60 +5,80 @@ using System.Linq;
 
 namespace inausoft.netCLI
 {
-    public class CLFlow
+    public class CLIFlow
     {
         private IServiceProvider _serviceProvider;
 
-        private Mapping _config;
+        private CommandMapping _mapping;
 
-        private IOptionsDeserializer _deserializer;
+        private ICommandDeserializer _deserializer;
 
         private Action<ErrorCode> _fallbackFunc;
 
-        internal CLFlow()
+        internal CLIFlow()
         {
-            _deserializer = new LogicalOptionsDeserializer();
+            _deserializer = new LogicalCommandDeserializer();
             _fallbackFunc = (error) => { };
         }
 
-        public CLFlow UseFallback(Action<ErrorCode> fallback)
+        public CLIFlow UseFallback(Action<ErrorCode> fallback)
         {
             _fallbackFunc = fallback ?? throw new ArgumentNullException(nameof(fallback));
             return this;
         }
 
-        public CLFlow UseMapping(Mapping mapping)
+        /// <summary>
+        /// Instructs to explicitly use specified <see cref="CommandMapping"/>.
+        /// </summary>
+        /// <param name="mapping"></param>
+        /// <returns></returns>
+        public CLIFlow UseMapping(CommandMapping mapping)
         {
-            _config = mapping ?? throw new ArgumentNullException(nameof(mapping));
+            _mapping = mapping ?? throw new ArgumentNullException(nameof(mapping));
             return this;
         }
 
-        public CLFlow UseServiceProvider(IServiceProvider provider)
+        /// <summary>
+        /// Instructs to use <see cref="IServiceProvider"/> to create instances of mapped <see cref="ICommandHandler"/>.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        public CLIFlow UseServiceProvider(IServiceProvider provider)
         {
             _serviceProvider = provider ?? throw new ArgumentOutOfRangeException(nameof(provider));
             return this;
         }
 
-        public CLFlow UseDeserializer(IOptionsDeserializer deserializer)
+        /// <summary>
+        /// Instructs to use supplied <see cref="ICommandDeserializer"/> instead of default implementation for the purpose of deserializing command arguments.
+        /// </summary>
+        /// <param name="deserializer"></param>
+        /// <returns></returns>
+        public CLIFlow UseDeserializer(ICommandDeserializer deserializer)
         {
             _deserializer = deserializer ?? throw new ArgumentNullException(nameof(deserializer));
             return this;
         }
 
+        /// <summary>
+        /// Deserializes supplied arguments into command and runs mapped <see cref="ICommandHandler"/>.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public int Run(string[] args)
         {
-            if (_config == null && _serviceProvider == null)
+            if (_mapping == null && _serviceProvider == null)
             {
-                throw new InvalidOperationException($"{nameof(Mapping)} need to be provided either with {nameof(UseMapping)} method or via {nameof(IServiceProvider)}.");
+                throw new InvalidOperationException($"{nameof(CommandMapping)} need to be provided either with {nameof(UseMapping)} method or via {nameof(IServiceProvider)}.");
             }
 
-            var config = _config ?? _serviceProvider.GetService<Mapping>() ?? throw new InvalidOperationException();
+            var mapping = _mapping ?? _serviceProvider.GetService<CommandMapping>() ?? throw new InvalidOperationException();
 
             MappingEntry mappingEntry;
 
             if (args.Any() && !args[0].Contains("-"))
             {
-                mappingEntry = config.Entries.FirstOrDefault(it =>
+                mappingEntry = mapping.Entries.FirstOrDefault(it =>
                  Attribute.IsDefined(it.CommandType, typeof(CommandAttribute)) &&
                  (Attribute.GetCustomAttribute(it.CommandType, typeof(CommandAttribute)) as CommandAttribute).Name == args[0]);
 
@@ -66,12 +86,12 @@ namespace inausoft.netCLI
             }
             else
             {
-                if (config.DefaultEntry == null)
+                if (mapping.DefaultEntry == null)
                 {
                     return Fallback(ErrorCode.UnspecifiedCommand);
                 }
 
-                mappingEntry = config.DefaultEntry;
+                mappingEntry = mapping.DefaultEntry;
             }
 
             if (mappingEntry == null)
@@ -85,11 +105,11 @@ namespace inausoft.netCLI
             {
                 command = _deserializer.Deserialize(mappingEntry.CommandType, args.ToArray());
             }
-            catch (DeserializationException ex)
+            catch (CommandDeserializationException ex)
             {
                 return Fallback(ex.ErrorCode);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Fallback(ErrorCode.Unknown);
             }
@@ -106,15 +126,15 @@ namespace inausoft.netCLI
             return (int)errorCode;
         }
 
-        public static CLFlow Create()
+        public static CLIFlow Create()
         {
-            return new CLFlow();
+            return new CLIFlow();
         }
     }
 
     public static class ServiceCollectionExtentions
     {
-        public static IServiceCollection ConfigureCLFlow(this IServiceCollection services, Action<Mapping> setup)
+        public static IServiceCollection ConfigureCLFlow(this IServiceCollection services, Action<CommandMapping> setup)
         {
             if (services == null)
             {
@@ -126,7 +146,7 @@ namespace inausoft.netCLI
                 throw new ArgumentNullException($"{nameof(setup)} cannot be null.");
             }
 
-            Mapping mapping = new Mapping();
+            CommandMapping mapping = new CommandMapping();
             setup(mapping);
             services.AddSingleton(mapping);
 
