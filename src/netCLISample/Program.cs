@@ -29,7 +29,7 @@ namespace netCLISample
             {
                 logger = provider.GetRequiredService<ILogger<Program>>();
 
-                return CLFlow.Create().UseServiceProvider(provider)
+                return CLIFlow.Create().UseServiceProvider(provider)
                                       .UseFallback(ErrorHandling)
                                       .Run(args);
             }

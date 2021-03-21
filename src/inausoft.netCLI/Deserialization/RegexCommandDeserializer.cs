@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
-    [Obsolete("RegexOptionDeserializer is obsolete. Use LogicOptionsDeserializer instead.")]
-    public class RegexOptionsDeserializer : IOptionsDeserializer
+    [Obsolete("RegexCommandDeserializer is obsolete. Use LogicCommandDeserializer instead.")]
+    public class RegexCommandDeserializer : ICommandDeserializer
     {
         private const string OptionsPattern = "--(\\S+)\\s?((\\w\\S*)|(\".*\"))?";
 
@@ -43,7 +43,7 @@ namespace inausoft.netCLI.Deserialization
 
             if (!ValidateOptionsExpression(optionsExpression))
             {
-                throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified option format : {OptionsPattern} is invalid.");
+                throw new CommandDeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified option format : {OptionsPattern} is invalid.");
             }
 
             var command = Activator.CreateInstance(type);
@@ -56,7 +56,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 if (!optionType.IsOptional && !optionsExpression.Contains($"--{optionType.Name}"))
                 {
-                    throw new DeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
+                    throw new CommandDeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
                 }
             }
 
@@ -68,7 +68,7 @@ namespace inausoft.netCLI.Deserialization
 
                 if (property == null)
                 {
-                    throw new DeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type {type} - no option : {optionName} was declared.");
+                    throw new CommandDeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type {type} - no option : {optionName} was declared.");
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
@@ -80,7 +80,7 @@ namespace inausoft.netCLI.Deserialization
                     }
                     else
                     {
-                        throw new DeserializationException(ErrorCode.OptionValueMissing, $"No value was specified for option : {optionName}.");
+                        throw new CommandDeserializationException(ErrorCode.OptionValueMissing, $"No value was specified for option : {optionName}.");
                     }
                 }
                 else

@@ -1,17 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace inausoft.netCLI.Deserialization
 {
-    public class LogicalOptionsDeserializer : IOptionsDeserializer
+    public class LogicalCommandDeserializer : ICommandDeserializer
     {
+        /// <summary>
+        /// Deserializes array of args into specified <see cref="Type"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="args"></param>
+        /// <returns>An instance of specified <see cref="Type"/></returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="CommandDeserializationException"/>
         public T Deserialize<T>(string[] args) where T : class
         {
             return Deserialize(typeof(T), args) as T;
         }
 
+        /// <summary>
+        /// Deserializes array of args into specified <see cref="Type"/>
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="args"></param>
+        /// <returns>An instance of specified <see cref="Type"/></returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="CommandDeserializationException"/>
         public object Deserialize(Type type, string[] args)
         {
             if (type == null)
@@ -38,7 +53,7 @@ namespace inausoft.netCLI.Deserialization
 
                     if(key == null)
                     {
-                        throw new DeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified args are invalid.");
+                        throw new CommandDeserializationException(ErrorCode.InvalidOptionsFormat, $"Cannot deserialize into type {type} - specified args are invalid.");
                     }
 
                     options[key] = arg;
@@ -53,7 +68,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name))
                 {
-                    throw new DeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
+                    throw new CommandDeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
                 }
             }
 
@@ -65,7 +80,7 @@ namespace inausoft.netCLI.Deserialization
 
                 if (property == null)
                 {
-                    throw new DeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type {type} - no option : {optionName} was declared.");
+                    throw new CommandDeserializationException(ErrorCode.UnrecognizedOption, $"Cannot deserialize into type {type} - no option : {optionName} was declared.");
                 }
 
                 //if there is no value for an option. Ex. 'move --force' as 'opposed to --force true'
@@ -77,7 +92,7 @@ namespace inausoft.netCLI.Deserialization
                     }
                     else
                     {
-                        throw new DeserializationException(ErrorCode.OptionValueMissing, $"No value was specified for option : {optionName}.");
+                        throw new CommandDeserializationException(ErrorCode.OptionValueMissing, $"No value was specified for option : {optionName}.");
                     }
                 }
                 else
@@ -85,7 +100,6 @@ namespace inausoft.netCLI.Deserialization
                     property.SetMethod.Invoke(command, new object[] { Convert.ChangeType(option.Value, property.PropertyType) });
                 }
             }
-
             return command;
         }
     }
