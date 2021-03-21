@@ -8,7 +8,7 @@ namespace inausoft.netCLI.Tests
     public class netCLITests
     {
         [TestMethod]
-        public void CLFlow_Run_ShouldRunProperCommandHandler_ForMultipleOptions()
+        public void CLIFlow_Run_ShouldRunProperCommandHandler_ForMultipleOptions()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -38,7 +38,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldRunProperCommandHandler_WhenSetupUsingDI()
+        public void CLIFlow_Run_ShouldRunProperCommandHandler_WhenSetupUsingDI()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -53,7 +53,7 @@ namespace inausoft.netCLI.Tests
                             };
 
             var services = new ServiceCollection();
-            services.ConfigureCLFlow(mapping =>
+            services.ConfigureCLIFlow(mapping =>
             {
                 mapping.Map<Command1, MockCommand1Handler>();
             });
@@ -74,7 +74,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMapped()
+        public void CLIFlow_Run_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMapped()
         {
             //Arrange
             var args = new string[]
@@ -101,7 +101,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldThrowInvalidCommmandException_ForNotMappedCommand()
+        public void CLIFlow_Run_ShouldThrowInvalidCommmandException_ForNotMappedCommand()
         {
             var invalidCommandName = "invalidCommandName";
 
@@ -123,7 +123,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldThrowInvalidCommmandException_ForEmptyArguments()
+        public void CLIFlow_Run_ShouldThrowInvalidCommmandException_ForEmptyArguments()
         {
             //Arrange
             var args = new string[] { };
@@ -139,7 +139,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldThrowInvalidOptionException_ForInvalidOption()
+        public void CLIFlow_Run_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
@@ -162,7 +162,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified()
+        public void CLIFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -190,7 +190,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void CLFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified_WithDI()
+        public void CLIFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified_WithDI()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -205,7 +205,7 @@ namespace inausoft.netCLI.Tests
 
 
             var services = new ServiceCollection();
-            services.ConfigureCLFlow(mapping =>
+            services.ConfigureCLIFlow(mapping =>
             {
                 mapping.MapDefault<Command1, MockCommand1Handler>();
             });

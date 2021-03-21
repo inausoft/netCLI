@@ -18,7 +18,7 @@ namespace netCLISample
                 builder.SetMinimumLevel(LogLevel.Debug);
                 builder.AddConsole();
             });
-            services.ConfigureCLFlow(mapping =>
+            services.ConfigureCLIFlow(mapping =>
             {
                 mapping.Map<MoveCommand, MoveCommandHandler>()
                        .MapDefault<HelpCommand, HelpCommandHandler>();

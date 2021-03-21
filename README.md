@@ -29,9 +29,9 @@ namespace netCLIConsoleApp
     {
         static int Main(string[] args)
         {
-            var mapping = new CLIConfiguration().Map<MoveCommand>(new MoveCommandHandler());
+            var mapping = new CommandMapping().Map<MoveCommand>(new MoveCommandHandler());
 
-            return CLFlow.Create().UseMapping(mapping)
+            return CLIFlow.Create().UseMapping(mapping)
                                   .Run(args);
         }
     }
@@ -53,7 +53,7 @@ namespace netCLIConsoleApp
     {
         public override int Run(MoveCommand options)
         {
-            Console.WriteLine($"Files moved from {options.From} to {options.To}");
+            Console.WriteLine($"Files moved from {options.PathFrom} to {options.PathTo}");
 
             return 0;
         }

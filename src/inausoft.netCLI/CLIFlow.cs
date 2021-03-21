@@ -134,7 +134,7 @@ namespace inausoft.netCLI
 
     public static class ServiceCollectionExtentions
     {
-        public static IServiceCollection ConfigureCLFlow(this IServiceCollection services, Action<CommandMapping> setup)
+        public static IServiceCollection ConfigureCLIFlow(this IServiceCollection services, Action<CommandMapping> setup)
         {
             if (services == null)
             {
