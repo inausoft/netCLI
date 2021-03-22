@@ -3,10 +3,10 @@
     /// <summary>
     /// Default help command.
     /// </summary>
-    [CommandAttribute("help", "Shows details about available commands")]
+    [Command("help", "Lists available commands and related details.")]
     public class HelpCommand
     {
-        [OptionAttribute("command")]
+        [Option("command", "Command name for which details should be displayed.", IsOptional = true)]
         public string SpecifiedCommandName { get; set; }
     }
 }

@@ -3,20 +3,30 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Iwanowski Marcin, Kaczor Mateusz</Authors>
+    <Authors>Iwanowski Marcin, Kaczor Mateusz, Marlewski Jan, Huderek Damian</Authors>
     <PackageProjectUrl>https://github.com/inausoft/netCLI</PackageProjectUrl>
     <RepositoryUrl>https://github.com/inausoft/netCLI</RepositoryUrl>
     <PackageTags>CLI command line parsing</PackageTags>
-    <Version>1.0.0</Version>
-    <Description>Lightweight library meant for facilitate command line arguments parsing and flow control over .net CLI applications</Description>
+    <Version>2.0.0</Version>
+    <Description>Lightweight library meant to facilitate command line arguments parsing and flow control over .net CLI applications</Description>
     <PackageIcon>netCLI.png</PackageIcon>
     <PackageIconUrl />
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageReleaseNotes>- First alpha release.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <Company>inausoft &amp; contributors</Company>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>2021 inausoft</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\WorkSpaces\inausoft\netCLI\src\inausoft.netCLI\inausoft.netCLI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\WorkSpaces\inausoft\netCLI\src\inausoft.netCLI\inausoft.netCLI.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

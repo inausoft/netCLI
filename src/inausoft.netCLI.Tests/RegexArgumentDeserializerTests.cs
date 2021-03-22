@@ -8,6 +8,13 @@ namespace inausoft.netCLI.Tests
     [TestClass]
     public class RegexArgumentDeserializerTests
     {
+        ICommandDeserializer Deserializer { get; }
+
+        public RegexArgumentDeserializerTests()
+        {
+            Deserializer = new LogicalCommandDeserializer();
+        }
+
         [TestMethod]
         public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions()
         {
@@ -22,10 +29,8 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", intOptionValue.ToString()
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var command = deserializer.Deserialize<Command1>(args);
+            var command = Deserializer.Deserialize<Command1>(args);
 
             //Assert
             Assert.IsTrue(command.BoolOption);
@@ -36,7 +41,8 @@ namespace inausoft.netCLI.Tests
 
         [TestMethod]
         [DataRow("s")]
-        [DataRow(@"C:\Program%Files")]
+        [DataRow(@"C:\ProgramFiles")]
+        [DataRow(@"C:\Program Files")]
         public void RegexArgumentHandler_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
             //Arrange
@@ -46,52 +52,91 @@ namespace inausoft.netCLI.Tests
                                 "--stringOption", stringOptionValue
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
-
             //Act
-            var command = deserializer.Deserialize<Command1>(args);
+            var command = Deserializer.Deserialize<Command2>(args);
 
             //Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
         }
 
-        [ExpectedException(typeof(InvalidOptionException))]
         [TestMethod]
-        public void RegexArgumentHandler_ThrowsInvalidOptionException_ForInvalidOption()
+        public void RegexArgumentHandler_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
         {
             //Arrange
-            var args = new string[]
-                            {
-                                "--boolOptionXX", "true",
-                            };
-
-            var deserializer = new RegexOptionsDeserializer();
+            var args = new string[] { };
 
             //Act
-            deserializer.Deserialize<Command1>(args);
+            var command = Deserializer.Deserialize<Command2>(args);
 
-            //Assert with exception
+            //Assert
+            Assert.AreEqual(Command2.SomeDefaultValue, command.StringOption);
         }
 
-        [ExpectedException(typeof(FormatException))]
         [TestMethod]
-        [DataRow("random_string_winth_no_options")]
-        [DataRow("command --option optionvalue")]
-        [DataRow("--optionX optionXvalue --optionY optionYvalue random_string_at_the_end")]
-        public void RegexArgumentHandler_ThrowsArgumentException_ForInvalidInputArgs(string optionsExpression)
+        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
                             {
-                                optionsExpression,
+                                "--boolOption", "true",
+                                "--boolOptionXX", "true",
+                                "--stringOption", "stringOptionValue",
+                                "--intOption", "1"
                             };
 
-            var deserializer = new RegexOptionsDeserializer();
+            //Act
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
+        }
+
+        [TestMethod]
+        public void RegexOptionsDeserializer_Deserialize_ThrowsDeserializationException_WhenNoValueWasSpecifiedForNotBooleanProperty()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "--stringOption",
+                                "--boolOption", "true",
+                                "--intOption", "1"
+                            };
 
             //Act
-            deserializer.Deserialize<Command1>(args);
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
-            //Assert with exception
+            //Assert
+            Assert.AreEqual(ErrorCode.OptionValueMissing, exception.ErrorCode);
+        }
+
+        [TestMethod]
+        public void RegexArgumentHandler_ThrowsDeserializationException_WhenNotAllRequiredOptionsWereSupplied()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "--boolOption", "true",
+                                "--intOption", "1"
+                            };
+
+            //Act
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
+        }
+
+        [TestMethod]
+        [DataRow(new string[] { "random_string_with_no_options" })]
+        [DataRow(new string[] { "command", "--option", "optionvalue" })]
+        [DataRow(new string[] { "--optionX", "optionXvalue", "--optionY", "optionYvalue", "random_string_at_the_end" })]
+        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
+        {
+            //Act
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.InvalidOptionsFormat, exception.ErrorCode);
         }
     }
 }
