@@ -43,7 +43,7 @@ namespace inausoft.netCLI.Deserialization
 
             foreach(var arg in args)
             {
-                if (arg.Contains('-'))
+                if (arg.StartsWith("-"))
                 {
                     options.Add(arg.Replace("-", ""), null);
                 }

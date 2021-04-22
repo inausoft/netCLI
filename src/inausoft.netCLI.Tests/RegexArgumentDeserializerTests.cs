@@ -129,6 +129,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         [DataRow(new string[] { "random_string_with_no_options" })]
         [DataRow(new string[] { "command", "--option", "optionvalue" })]
+        [DataRow(new string[] { "op--tion", "optionvalue" })]
         [DataRow(new string[] { "--optionX", "optionXvalue", "--optionY", "optionYvalue", "random_string_at_the_end" })]
         public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
         {
