@@ -30,7 +30,12 @@ namespace inausoft.netCLI
         /// <param name="helpDescription"></param>
         public OptionAttribute(string name, string helpDescription = "")
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(name) || name.StartsWith("-"))
+            {
+                throw new ArgumentException(nameof(name));
+            }
+
+            Name = name;
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));
         }

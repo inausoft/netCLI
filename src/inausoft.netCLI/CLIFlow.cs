@@ -76,7 +76,7 @@ namespace inausoft.netCLI
 
             MappingEntry mappingEntry;
 
-            if (args.Any() && !args[0].Contains("-"))
+            if (args.Any() && !args[0].StartsWith("-"))
             {
                 mappingEntry = mapping.Entries.FirstOrDefault(it =>
                  Attribute.IsDefined(it.CommandType, typeof(CommandAttribute)) &&
