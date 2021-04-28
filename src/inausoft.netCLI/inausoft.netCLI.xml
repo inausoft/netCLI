@@ -138,12 +138,7 @@
         </member>
         <member name="P:inausoft.netCLI.OptionAttribute.Name">
             <summary>
-            Gets the full name of the option.
-            </summary>
-        </member>
-        <member name="P:inausoft.netCLI.OptionAttribute.ShortName">
-            <summary>
-            Gets the short name of the option.
+            Gets the name of the option.
             </summary>
         </member>
         <member name="P:inausoft.netCLI.OptionAttribute.HelpDescription">
@@ -160,7 +155,7 @@
             <summary>
             Initializes a new instance of <see cref="T:inausoft.netCLI.OptionAttribute"/> with specified name and description.
             </summary>
-            <param name="naming"></param>
+            <param name="name"></param>
             <param name="helpDescription"></param>
         </member>
         <member name="T:CommandMapping">

@@ -3,13 +3,13 @@
     [Command("command1")]
     class Command1
     {
-        [Option("boolOption|b")]
+        [Option("boolOption")]
         public bool BoolOption { get; set; }
 
-        [Option("stringOption|s")]
+        [Option("stringOption")]
         public string StringOption { get; set; }
 
-        [Option("intOption|i")]
+        [Option("intOption")]
         public int IntOption { get; set; }
 
         public string NotOptionProperty { get; set; }

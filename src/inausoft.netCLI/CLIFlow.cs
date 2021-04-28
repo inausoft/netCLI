@@ -45,7 +45,7 @@ namespace inausoft.netCLI
         /// <returns></returns>
         public CLIFlow UseServiceProvider(IServiceProvider provider)
         {
-            _serviceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
+            _serviceProvider = provider ?? throw new ArgumentOutOfRangeException(nameof(provider));
             return this;
         }
 

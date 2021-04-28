@@ -25,7 +25,7 @@ namespace inausoft.netCLI
         /// <param name="helpDescription"></param>
         public CommandAttribute(string name, string helpDescription = "")
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name = name ?? throw new ArgumentException(nameof(name));
 
             HelpDescription = helpDescription;
         }

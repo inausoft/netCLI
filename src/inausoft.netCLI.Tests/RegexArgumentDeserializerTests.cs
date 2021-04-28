@@ -6,11 +6,11 @@ using System;
 namespace inausoft.netCLI.Tests
 {
     [TestClass]
-    public class ArgumentDeserializerTests
+    public class RegexArgumentDeserializerTests
     {
         ICommandDeserializer Deserializer { get; }
 
-        public ArgumentDeserializerTests()
+        public RegexArgumentDeserializerTests()
         {
             Deserializer = new LogicalCommandDeserializer();
         }
@@ -27,30 +27,6 @@ namespace inausoft.netCLI.Tests
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
                                 "--intOption", intOptionValue.ToString()
-                            };
-
-            //Act
-            var command = Deserializer.Deserialize<Command1>(args);
-
-            //Assert
-            Assert.IsTrue(command.BoolOption);
-            Assert.IsNull(command.NotOptionProperty);
-            Assert.AreEqual(stringOptionValue, command.StringOption);
-            Assert.AreEqual(intOptionValue, command.IntOption);
-        }
-
-        [TestMethod]
-        public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions_UsingShortNames()
-        {
-            //Arrange
-            var stringOptionValue = "sampleString";
-            var intOptionValue = 102;
-
-            var args = new string[]
-                            {
-                                "-b",
-                                "-s", stringOptionValue,
-                                "-i", intOptionValue.ToString()
                             };
 
             //Act
