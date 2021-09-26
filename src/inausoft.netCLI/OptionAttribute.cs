@@ -40,6 +40,11 @@ namespace inausoft.netCLI
                 throw new ArgumentNullException(nameof(naming));
             }
 
+            if (naming.Contains("-"))
+            {
+                throw new ArgumentException($"{nameof(naming)} cannot include '-'.");
+            }
+
             var names = naming.Split('|');
 
             if (names.Length > 2 || names.Length == 0)
@@ -47,11 +52,11 @@ namespace inausoft.netCLI
                 throw new ArgumentException(nameof(naming));
             }
 
-            Name = names[0];
+            Name = "--" + names[0];
 
             if (names.Length == 2)
             {
-                ShortName = names[1];
+                ShortName = "-" + names[1];
             }
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));

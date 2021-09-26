@@ -5,11 +5,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace inausoft.netCLI.Tests
 {
     [TestClass]
-    public class ArgumentDeserializerTests
+    public class LogicalCommandDeserializerTests
     {
         ICommandDeserializer Deserializer { get; }
 
-        public ArgumentDeserializerTests()
+        public LogicalCommandDeserializerTests()
         {
             Deserializer = new LogicalCommandDeserializer();
         }
@@ -130,6 +130,22 @@ namespace inausoft.netCLI.Tests
 
             //Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
+        }
+
+        [TestMethod]
+        public void RegexArgumentHandler_ThrowsDeserializationException_WhenOptionIsSuppliedWithOneHyphen()
+        {
+            //Arrange
+            var args = new string[]
+                            {
+                                "-stringOption", "stringOptionValue",
+                            };
+
+            //Act
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command2>(args));
 
             //Assert
             Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);

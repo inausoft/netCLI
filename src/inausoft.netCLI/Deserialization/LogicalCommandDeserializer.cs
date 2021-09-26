@@ -45,7 +45,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 if (arg.StartsWith("-"))
                 {
-                    options.Add(arg.Replace("-", ""), null);
+                    options.Add(arg, null);
                 }
                 else
                 {
