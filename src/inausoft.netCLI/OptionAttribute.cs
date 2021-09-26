@@ -42,16 +42,20 @@ namespace inausoft.netCLI
 
             var names = naming.Split('|');
 
-            if(names.Length > 2 || names.Length == 0)
+            if (names.Length > 2 || names.Length == 0)
             {
                 throw new ArgumentException(nameof(naming));
             }
 
             Name = names[0];
 
-            if(names.Length == 2)
+            if (names.Length == 2)
             {
                 ShortName = names[1];
+            }
+            else
+            {
+                ShortName = "";
             }
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));

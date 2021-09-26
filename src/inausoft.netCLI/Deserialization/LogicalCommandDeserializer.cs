@@ -43,7 +43,7 @@ namespace inausoft.netCLI.Deserialization
 
             foreach(var arg in args)
             {
-                if (arg.Contains('-'))
+                if (arg.StartsWith("-"))
                 {
                     options.Add(arg.Replace("-", ""), null);
                 }
@@ -76,7 +76,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 var optionName = option.Key;
 
-                var property = properties.SingleOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName
+                var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName
                                                             || (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).ShortName == optionName);
 
                 if (property == null)

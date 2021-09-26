@@ -224,5 +224,29 @@ namespace inausoft.netCLI.Tests
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
             Assert.AreEqual(intOptionValue, mockCommandHandler.LastRunParameters.IntOption);
         }
+
+        [TestMethod]
+        public void CLIFlow_Run_ShouldRunProperCommand_WhenCommandNameIncludeDash()
+        {
+            //Arrange
+            var stringOptionValue = "sampleString";
+
+            var args = new string[]
+                            {
+                                "command-sample",
+                                "--stringOption", stringOptionValue,
+                            };
+
+
+            var mockCommandHandler = new MockCommand3Handler();
+            var mapping = new CommandMapping().MapDefault<Command3>(mockCommandHandler);
+
+            //Act
+            var result = CLIFlow.Create().UseMapping(mapping).Run(args);
+
+            //Assert
+            Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
+            Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
+        }
     }
 }
