@@ -53,10 +53,6 @@ namespace inausoft.netCLI
             {
                 ShortName = names[1];
             }
-            else
-            {
-                ShortName = "";
-            }
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));
         }

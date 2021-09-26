@@ -63,6 +63,27 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
+        public void RegexArgumentHandler_ThrowsDeserializationException_WhenWrongOptionsWereSupplied_AndShortNameWasNotAssignedForRequiredOption()
+        {
+            //Arrange
+            var stringOptionValue = "sampleString";
+            var intOptionValue = 102;
+
+            var args = new string[]
+                            {
+                                "-b",
+                                "-s", stringOptionValue,
+                                "-i", intOptionValue.ToString()
+                            };
+
+            //Act
+            var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command3>(args));
+
+            //Assert
+            Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
+        }
+
+        [TestMethod]
         [DataRow("s")]
         [DataRow(@"C:\ProgramFiles")]
         [DataRow(@"C:\Program Files")]

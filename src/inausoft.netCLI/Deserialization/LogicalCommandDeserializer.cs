@@ -66,7 +66,7 @@ namespace inausoft.netCLI.Deserialization
 
             foreach (var optionType in properties.Select(it => Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute))
             {
-                if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name) && !options.Keys.Contains(optionType.ShortName))
+                if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name) && !options.Keys.Contains(optionType.ShortName ?? string.Empty))
                 {
                     throw new CommandDeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
                 }

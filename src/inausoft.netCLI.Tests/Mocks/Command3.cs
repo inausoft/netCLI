@@ -5,7 +5,7 @@
     {
         public const string SomeDefaultValue = "SomeDefaultValue";
 
-        [Option("stringOption", IsOptional = true)]
+        [Option("stringOption", IsOptional = false)]
         public string StringOption { get; set; }
 
         public Command3()
