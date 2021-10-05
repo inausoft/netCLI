@@ -33,8 +33,10 @@ namespace netCLIConsoleApp
         {
             var mapping = new CommandMapping().Map<MoveCommand>(new MoveCommandHandler());
 
-            return CLIFlow.Create().UseMapping(mapping)
-                                  .Run(args);
+            return new CLIFlowBuilder()
+                            .UseMapping(mapping)
+                            .Build()
+                            .Run(args);
         }
     }
 
@@ -88,9 +90,11 @@ namespace ConsoleApp1
             {
                 logger = provider.GetRequiredService<ILogger<Program>>();
 
-                return CLFlow.Create().UseServiceProvider(provider)
-                                      .UseFallback(ErrorHandling)
-                                      .Run(args);
+                return new CLFlowBuilder()
+                                    .UseServiceProvider(provider)
+                                    .UseFallback(ErrorHandling)
+                                    .Build()
+                                    .Run(args);
             }
         }
     }

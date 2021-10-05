@@ -73,7 +73,7 @@ namespace inausoft.netCLI.Commands
 
                     foreach (var option in commandInfo.Options.OrderBy(it => it.Name))
                     {
-                        message.AppendLine(string.Format("--{0, -15} {1} {2}", option.Name, option.HelpDescription, RenderOptional(option.IsOptional)));
+                        message.AppendLine(string.Format("{0, -15} {1} {2}", option.Name, option.HelpDescription, RenderOptional(option.IsOptional)));
                     }
                 }
 

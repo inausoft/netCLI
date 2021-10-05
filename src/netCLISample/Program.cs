@@ -28,14 +28,15 @@ namespace netCLISample
             using (ServiceProvider provider = services.BuildServiceProvider())
             {
                 logger = provider.GetRequiredService<ILogger<Program>>();
-
-                return CLIFlow.Create().UseServiceProvider(provider)
-                                      .UseFallback(ErrorHandling)
-                                      .Run(args);
+                return new CLIFlowBuilder()
+                            .UseServiceProvider(provider)
+                            .UseFallback(ErrorHandling)
+                            .Build()
+                            .Run(args);
             }
         }
 
-        public static void ErrorHandling(ErrorCode errorCode)
+        public static int ErrorHandling(ErrorCode errorCode)
         {
             switch (errorCode)
             {
@@ -50,6 +51,7 @@ namespace netCLISample
                     break;
             }
             logger.LogInformation("Try `help --command <command>` to see more details.");
+            return (int)errorCode;
         }
     }
 
