@@ -17,7 +17,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void LogicalCommandDeserializer_DeserializeProperCommand_ForMultipleOptions()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -28,10 +28,10 @@ namespace inausoft.netCLI.Tests
                                 "--intOption", intOptionValue.ToString()
                             };
 
-            //Act
+            // Act
             var command = Deserializer.Deserialize<Command1>(args);
 
-            //Assert
+            // Assert
             Assert.IsTrue(command.BoolOption);
             Assert.IsNull(command.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, command.StringOption);
@@ -41,7 +41,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void LogicalCommandDeserializer_DeserializeProperCommand_ForMultipleOptions_UsingShortNames()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -49,13 +49,13 @@ namespace inausoft.netCLI.Tests
                             {
                                 "-b",
                                 "-s", stringOptionValue,
-                                "-i", intOptionValue.ToString()
+                                "-i", intOptionValue.ToString(),
                             };
 
-            //Act
+            // Act
             var command = Deserializer.Deserialize<Command1>(args);
 
-            //Assert
+            // Assert
             Assert.IsTrue(command.BoolOption);
             Assert.IsNull(command.NotOptionProperty);
             Assert.AreEqual(stringOptionValue, command.StringOption);
@@ -65,7 +65,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenWrongOptionsWereSupplied_AndShortNameWasNotAssignedForRequiredOption()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -73,13 +73,13 @@ namespace inausoft.netCLI.Tests
                             {
                                 "-b",
                                 "-s", stringOptionValue,
-                                "-i", intOptionValue.ToString()
+                                "-i", intOptionValue.ToString(),
                             };
 
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command3>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
         }
 
@@ -89,100 +89,100 @@ namespace inausoft.netCLI.Tests
         [DataRow(@"C:\Program Files")]
         public void LogicalCommandDeserializer_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
-            //Arrange
+            // Arrange
 
             var args = new string[]
                             {
-                                "--stringOption", stringOptionValue
+                                "--stringOption", stringOptionValue,
                             };
 
-            //Act
+            // Act
             var command = Deserializer.Deserialize<Command2>(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual(stringOptionValue, command.StringOption);
         }
 
         [TestMethod]
         public void LogicalCommandDeserializer_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
         {
-            //Arrange
+            // Arrange
             var args = new string[] { };
 
-            //Act
+            // Act
             var command = Deserializer.Deserialize<Command2>(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual(Command2.SomeDefaultValue, command.StringOption);
         }
 
         [TestMethod]
         public void LogicalCommandDeserializer_ThrowsDeserializationException_ForInvalidOption()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "--boolOption", "true",
                                 "--boolOptionXX", "true",
                                 "--stringOption", "stringOptionValue",
-                                "--intOption", "1"
+                                "--intOption", "1",
                             };
 
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
         }
 
         [TestMethod]
-        public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenOptionIsSuppliedWithOneHyphen()
+        public void LogicalCommandDeserializer_ThrowsDeserializationExceptionWithUnrecognizedOption_WhenOptionIsSuppliedWithOneHyphen()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "-stringOption", "stringOptionValue",
                             };
 
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command2>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.UnrecognizedOption, exception.ErrorCode);
         }
 
         [TestMethod]
-        public void LogicalCommandDeserializer_Deserialize_ThrowsDeserializationException_WhenNoValueWasSpecifiedForNotBooleanProperty()
+        public void LogicalCommandDeserializer_Deserialize_ThrowsDeserializationExceptionWithOptionValueMissing_WhenNoValueWasSpecifiedForNotBooleanProperty()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "--stringOption",
                                 "--boolOption", "true",
-                                "--intOption", "1"
+                                "--intOption", "1",
                             };
 
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.OptionValueMissing, exception.ErrorCode);
         }
 
         [TestMethod]
-        public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenNotAllRequiredOptionsWereSupplied()
+        public void LogicalCommandDeserializer_ThrowsDeserializationExceptionWithRequiredOptionMissing_WhenNotAllRequiredOptionsWereSupplied()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "--boolOption", "true",
-                                "--intOption", "1"
+                                "--intOption", "1",
                             };
 
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.RequiredOptionMissing, exception.ErrorCode);
         }
 
@@ -191,12 +191,12 @@ namespace inausoft.netCLI.Tests
         [DataRow(new string[] { "command", "--option", "optionvalue" })]
         [DataRow(new string[] { "op--tion", "optionvalue" })]
         [DataRow(new string[] { "--optionX", "optionXvalue", "--optionY", "optionYvalue", "random_string_at_the_end" })]
-        public void LogicalCommandDeserializer_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
+        public void LogicalCommandDeserializer_ThrowsDeserializationExceptionWithInvalidOptionsFormat_ForInvalidInputArgs(string[] args)
         {
-            //Act
+            // Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));
 
-            //Assert
+            // Assert
             Assert.AreEqual(ErrorCode.InvalidOptionsFormat, exception.ErrorCode);
         }
     }

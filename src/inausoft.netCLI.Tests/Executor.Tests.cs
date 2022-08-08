@@ -10,7 +10,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void CLIFlow_Run_ShouldRunProperCommandHandler_ForMultipleOptions()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -19,16 +19,16 @@ namespace inausoft.netCLI.Tests
                                 "command1",
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
-                                "--intOption", intOptionValue.ToString()
+                                "--intOption", intOptionValue.ToString(),
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
             var mapping = new CommandMapping().Map<Command1>(mockCommandHandler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
             Assert.IsTrue(mockCommandHandler.LastRunParameters.BoolOption);
             Assert.IsNull(mockCommandHandler.LastRunParameters.NotOptionProperty);
@@ -40,7 +40,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void CLIFlow_Run_ShouldRunProperCommandHandler_WhenSetupUsingDI()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -49,7 +49,7 @@ namespace inausoft.netCLI.Tests
                                 "command1",
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
-                                "--intOption", intOptionValue.ToString()
+                                "--intOption", intOptionValue.ToString(),
                             };
 
             var services = new ServiceCollection();
@@ -60,10 +60,10 @@ namespace inausoft.netCLI.Tests
 
             var provider = services.BuildServiceProvider();
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseServiceProvider(provider).Run(args);
 
-            //Assert
+            // Assert
             var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
 
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
@@ -76,13 +76,13 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void CLIFlow_Run_ShouldRunOnlyProperCommandHandler_WhenMultipleCommandHandlersAreMapped()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "command1",
                                 "--boolOption", "true",
                                 "--stringOption", "stringOptionValue",
-                                "--intOption", "1"
+                                "--intOption", "1",
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
@@ -90,10 +90,10 @@ namespace inausoft.netCLI.Tests
             var mapping = new CommandMapping().Map<Command1>(mockCommand1Handler)
                                        .Map<Command2>(mockCommand2Handler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
 
             Assert.IsNull(mockCommand2Handler.LastRunParameters);
@@ -105,7 +105,7 @@ namespace inausoft.netCLI.Tests
         {
             var invalidCommandName = "invalidCommandName";
 
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 invalidCommandName,
@@ -115,56 +115,56 @@ namespace inausoft.netCLI.Tests
             var mockCommand1Handler = new MockCommand1Handler();
             var mapping = new CommandMapping().Map<Command1>(mockCommand1Handler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual((int)ErrorCode.UnrecognizedCommand, result);
         }
 
         [TestMethod]
         public void CLIFlow_Run_ShouldThrowInvalidCommmandException_ForEmptyArguments()
         {
-            //Arrange
+            // Arrange
             var args = new string[] { };
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mapping = new CommandMapping().Map<Command1>(mockCommand1Handler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual((int)ErrorCode.UnspecifiedCommand, result);
         }
 
         [TestMethod]
         public void CLIFlow_Run_ShouldThrowInvalidOptionException_ForInvalidOption()
         {
-            //Arrange
+            // Arrange
             var args = new string[]
                             {
                                 "command1",
                                 "--boolOption", "true",
                                 "--boolOptionXX", "true",
                                 "--stringOption", "stringOptionValue",
-                                "--intOption", "1"
+                                "--intOption", "1",
                             };
 
             var mockCommand1Handler = new MockCommand1Handler();
             var mapping = new CommandMapping().Map<Command1>(mockCommand1Handler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual((int)ErrorCode.UnrecognizedOption, result);
         }
 
         [TestMethod]
         public void CLIFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -172,13 +172,13 @@ namespace inausoft.netCLI.Tests
                             {
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
-                                "--intOption", intOptionValue.ToString()
+                                "--intOption", intOptionValue.ToString(),
                             };
 
             var mockCommandHandler = new MockCommand1Handler();
             var mapping = new CommandMapping().MapDefault<Command1>(mockCommandHandler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
             //Assert
@@ -192,7 +192,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void CLIFlow_Run_ShouldRunDefaultCommand_WhenNoCommandWasSpecified_WithDI()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
             var intOptionValue = 102;
 
@@ -200,7 +200,7 @@ namespace inausoft.netCLI.Tests
                             {
                                 "--boolOption",
                                 "--stringOption", stringOptionValue,
-                                "--intOption", intOptionValue.ToString()
+                                "--intOption", intOptionValue.ToString(),
                             };
 
 
@@ -212,10 +212,10 @@ namespace inausoft.netCLI.Tests
 
             var provider = services.BuildServiceProvider();
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseServiceProvider(provider).Run(args);
 
-            //Assert
+            // Assert
             var mockCommandHandler = provider.GetRequiredService<MockCommand1Handler>();
 
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
@@ -228,7 +228,7 @@ namespace inausoft.netCLI.Tests
         [TestMethod]
         public void CLIFlow_Run_ShouldRunProperCommand_WhenCommandNameIncludeDash()
         {
-            //Arrange
+            // Arrange
             var stringOptionValue = "sampleString";
 
             var args = new string[]
@@ -241,10 +241,10 @@ namespace inausoft.netCLI.Tests
             var mockCommandHandler = new MockCommand3Handler();
             var mapping = new CommandMapping().MapDefault<Command3>(mockCommandHandler);
 
-            //Act
+            // Act
             var result = CLIFlow.Create().UseMapping(mapping).Run(args);
 
-            //Assert
+            // Assert
             Assert.AreEqual(0, result, "RunCLI method indicted error in returned exit code");
             Assert.AreEqual(stringOptionValue, mockCommandHandler.LastRunParameters.StringOption);
         }
