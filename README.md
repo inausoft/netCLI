@@ -10,7 +10,9 @@ netCLI is a lightweight library meant to facilitate command line arguments parsi
 
 ## Supported scenarios:
 `> command --option <optionValue>`  
-`> command --option`
+`> command -o <optionValue>`  
+`> command --option`  
+`> command -o`
 
 # Getting Started
 
@@ -42,10 +44,10 @@ namespace netCLIConsoleApp
         [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
 
-        [Option("from", "Current files locations.")]
+        [Option("from|f", "Current files locations.")]
         public string PathFrom { get; set; }
 
-        [Option("to", "Destination path for the files.")]
+        [Option("to|t", "Destination path for the files.")]
         public bool PathTo { get; set; }
     }
 

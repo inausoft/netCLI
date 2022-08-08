@@ -59,10 +59,10 @@ namespace netCLISample
         [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
 
-        [Option("from", "Current files locations.")]
+        [Option("from|f", "Current files locations.")]
         public string PathFrom { get; set; }
 
-        [Option("to", "Destination path for the files.")]
+        [Option("to|t", "Destination path for the files.")]
         public string PathTo { get; set; }
     }
 
@@ -70,7 +70,7 @@ namespace netCLISample
     {
         public override int Run(MoveCommand options)
         {
-            Console.WriteLine("Files were moved.");
+            Console.WriteLine($"Files were moved from '{options.PathFrom}' to '{options.PathTo}'");
             return 0;
         }
     }

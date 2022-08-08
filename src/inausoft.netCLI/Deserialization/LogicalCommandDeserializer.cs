@@ -45,7 +45,7 @@ namespace inausoft.netCLI.Deserialization
             {
                 if (arg.StartsWith("-"))
                 {
-                    options.Add(arg.Replace("-", ""), null);
+                    options.Add(arg, null);
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace inausoft.netCLI.Deserialization
 
             foreach (var optionType in properties.Select(it => Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute))
             {
-                if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name))
+                if (!optionType.IsOptional && !options.Keys.Contains(optionType.Name) && !options.Keys.Contains(optionType.ShortName ?? string.Empty))
                 {
                     throw new CommandDeserializationException(ErrorCode.RequiredOptionMissing, $"Cannot deserialize into type {type} - option {optionType} is missing.");
                 }
@@ -76,7 +76,8 @@ namespace inausoft.netCLI.Deserialization
             {
                 var optionName = option.Key;
 
-                var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName);
+                var property = properties.FirstOrDefault(it => (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).Name == optionName
+                                                            || (Attribute.GetCustomAttribute(it, typeof(OptionAttribute)) as OptionAttribute).ShortName == optionName);
 
                 if (property == null)
                 {

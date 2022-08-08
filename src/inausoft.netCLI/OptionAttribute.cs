@@ -9,9 +9,14 @@ namespace inausoft.netCLI
     public class OptionAttribute : Attribute
     {
         /// <summary>
-        /// Gets the name of the option.
+        /// Gets the full name of the option.
         /// </summary>
-        public string Name { get; }
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the short name of the option.
+        /// </summary>
+        public string ShortName { get; private set; }
 
         /// <summary>
         /// Gets the description of the option.
@@ -26,16 +31,33 @@ namespace inausoft.netCLI
         /// <summary>
         /// Initializes a new instance of <see cref="OptionAttribute"/> with specified name and description.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="naming"></param>
         /// <param name="helpDescription"></param>
-        public OptionAttribute(string name, string helpDescription = "")
+        public OptionAttribute(string naming, string helpDescription = "")
         {
-            if (string.IsNullOrWhiteSpace(name) || name.StartsWith("-"))
+            if (naming == null)
             {
-                throw new ArgumentException(nameof(name));
+                throw new ArgumentNullException(nameof(naming));
             }
 
-            Name = name;
+            if (naming.Contains("-"))
+            {
+                throw new ArgumentException($"{nameof(naming)} cannot include '-'.");
+            }
+
+            var names = naming.Split('|');
+
+            if (names.Length > 2 || names.Length == 0)
+            {
+                throw new ArgumentException(nameof(naming));
+            }
+
+            Name = $"--{names[0]}";
+
+            if (names.Length == 2)
+            {
+                ShortName = $"-{names[1]}";
+            }
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));
         }

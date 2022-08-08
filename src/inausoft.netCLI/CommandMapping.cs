@@ -83,7 +83,7 @@ public class CommandMapping
     }
 
     /// <summary>
-    /// Maps specified command with supplied <see cref="ICommandHandler"/> instance.
+    /// Maps specified command with supplied <see cref="ICommandHandler"/> instance. This command will run by default if no command were specified.
     /// </summary>
     /// <typeparam name="TCommand"></typeparam>
     /// <typeparam name="THandler"></typeparam>
