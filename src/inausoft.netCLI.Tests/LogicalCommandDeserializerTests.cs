@@ -15,7 +15,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions()
+        public void LogicalCommandDeserializer_DeserializeProperCommand_ForMultipleOptions()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -39,7 +39,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_DeserializeProperCommand_ForMultipleOptions_UsingShortNames()
+        public void LogicalCommandDeserializer_DeserializeProperCommand_ForMultipleOptions_UsingShortNames()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -63,7 +63,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_ThrowsDeserializationException_WhenWrongOptionsWereSupplied_AndShortNameWasNotAssignedForRequiredOption()
+        public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenWrongOptionsWereSupplied_AndShortNameWasNotAssignedForRequiredOption()
         {
             //Arrange
             var stringOptionValue = "sampleString";
@@ -87,7 +87,7 @@ namespace inausoft.netCLI.Tests
         [DataRow("s")]
         [DataRow(@"C:\ProgramFiles")]
         [DataRow(@"C:\Program Files")]
-        public void RegexArgumentHandler_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
+        public void LogicalCommandDeserializer_DeserializeProperCommand_ForStringOptions(string stringOptionValue)
         {
             //Arrange
 
@@ -104,7 +104,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
+        public void LogicalCommandDeserializer_DeserializeProperCommand_WhenOptionalCommandWasNotSupplied()
         {
             //Arrange
             var args = new string[] { };
@@ -117,7 +117,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidOption()
+        public void LogicalCommandDeserializer_ThrowsDeserializationException_ForInvalidOption()
         {
             //Arrange
             var args = new string[]
@@ -136,7 +136,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_ThrowsDeserializationException_WhenOptionIsSuppliedWithOneHyphen()
+        public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenOptionIsSuppliedWithOneHyphen()
         {
             //Arrange
             var args = new string[]
@@ -152,7 +152,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexOptionsDeserializer_Deserialize_ThrowsDeserializationException_WhenNoValueWasSpecifiedForNotBooleanProperty()
+        public void LogicalCommandDeserializer_Deserialize_ThrowsDeserializationException_WhenNoValueWasSpecifiedForNotBooleanProperty()
         {
             //Arrange
             var args = new string[]
@@ -170,7 +170,7 @@ namespace inausoft.netCLI.Tests
         }
 
         [TestMethod]
-        public void RegexArgumentHandler_ThrowsDeserializationException_WhenNotAllRequiredOptionsWereSupplied()
+        public void LogicalCommandDeserializer_ThrowsDeserializationException_WhenNotAllRequiredOptionsWereSupplied()
         {
             //Arrange
             var args = new string[]
@@ -191,7 +191,7 @@ namespace inausoft.netCLI.Tests
         [DataRow(new string[] { "command", "--option", "optionvalue" })]
         [DataRow(new string[] { "op--tion", "optionvalue" })]
         [DataRow(new string[] { "--optionX", "optionXvalue", "--optionY", "optionYvalue", "random_string_at_the_end" })]
-        public void RegexArgumentHandler_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
+        public void LogicalCommandDeserializer_ThrowsDeserializationException_ForInvalidInputArgs(string[] args)
         {
             //Act
             var exception = Assert.ThrowsException<CommandDeserializationException>(() => Deserializer.Deserialize<Command1>(args));

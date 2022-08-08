@@ -52,11 +52,11 @@ namespace inausoft.netCLI
                 throw new ArgumentException(nameof(naming));
             }
 
-            Name = "--" + names[0];
+            Name = $"--{names[0]}";
 
             if (names.Length == 2)
             {
-                ShortName = "-" + names[1];
+                ShortName = $"-{names[1]}";
             }
 
             HelpDescription = helpDescription ?? throw new ArgumentNullException(nameof(helpDescription));
