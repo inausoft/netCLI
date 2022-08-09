@@ -16,8 +16,8 @@ netCLI is a lightweight library meant to facilitate command line arguments parsi
 
 # Getting Started
 
-- Create .net Core Console Application
-- Install netCLI via [NuGet](https://www.nuget.org/packages/inausoft.netCLI/)
+- Create .net 6 Console Application
+- Install `inausoft.netCLI` via [NuGet](https://www.nuget.org/packages/inausoft.netCLI/)
 - Adjust Program.cs with the following code:
 
 
@@ -70,7 +70,7 @@ namespace netCLIConsoleApp
 ```cs
 ...
 
-namespace ConsoleApp1
+namespace netCLIConsoleApp
 {
     class Program
     {
@@ -100,9 +100,5 @@ namespace ConsoleApp1
 ```
 
 # Contributing
-## Full list of our contributors (in order of making first contribution):
-- Iwanowski, Marcin (MarcinIN)
-- Kaczor, Mateusz (matiduck)
-- Marlewski, Jan (jmarlew)
 
 If you like to join or contribute please see our [Contributing guidelines](CONTRIBUTING.md)
