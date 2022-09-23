@@ -41,7 +41,7 @@ namespace netCLIConsoleApp
     [Command("move", "Moves files between locations.")]
     public class MoveCommand
     {
-        [Option("force", "Indicates weather or not files should be overwritten.", IsOptional = true)]
+        [Option("force", "Indicates whether or not files should be overwritten.", IsOptional = true)]
         public bool IsForce { get; set; }
 
         [Option("from|f", "Current files locations.")]
